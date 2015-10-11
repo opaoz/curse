@@ -13,7 +13,7 @@ public class GeoNames {
     static GeoNames instance;
 
     static {
-        instance = new GeoNames(References.PATH);
+        instance = new GeoNames(References.GEO_NAMES_PATH);
     }
 
     private GeoNames(String path) {

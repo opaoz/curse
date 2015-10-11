@@ -1,10 +1,13 @@
 package ru.opa.pack.models;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.util.FileManager;
+import ru.opa.pack.references.References;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 
@@ -16,15 +19,28 @@ public class FamilyTree {
     public static final String FAMILY_URI = "http://family/";
     public static final String RELATIONSHIP_URI = "http://purl.org/vocab/relationship/";
     private Map<String, Resource> family = new HashMap<String, Resource>();
-    private Model model = ModelFactory.createDefaultModel();
+    private Model model;
 
     public FamilyTree() {
+        model = FileManager.get().loadModel(References.FAMILY_PATH);
+
+        if (model == null) {
+            model = reCreateModel();
+            System.out.println("Model was recreated...");
+        } else {
+            System.out.println("Model was loaded...");
+        }
+    }
+
+    public Model reCreateModel() {
+        model = ModelFactory.createDefaultModel();
         Resource NAMESPACE = model.createResource(RELATIONSHIP_URI);
         model.setNsPrefix("rela", RELATIONSHIP_URI);
 
         Property childOf = model.createProperty(RELATIONSHIP_URI, "childOf");
         Property siblingOf = model.createProperty(RELATIONSHIP_URI, "siblingOf");
         Property spouseOf = model.createProperty(RELATIONSHIP_URI, "spouseOf");
+        Property parentOf = model.createProperty(RELATIONSHIP_URI, "parentOf");
 
         family.put("Adam", model.createResource(FAMILY_URI + "adam"));
         family.put("Dotty", model.createResource(FAMILY_URI + "dotty"));
@@ -38,12 +54,25 @@ public class FamilyTree {
         push("Adam", spouseOf, "Dotty");
         push("Beth", spouseOf, "Chuck");
         push("Fan", spouseOf, "Greg");
+
+        push("Adam", siblingOf, "Beth");
+        push("Edward", siblingOf, "Fan");
+
         push("Edward", childOf, "Adam");
         push("Edward", childOf, "Dotty");
         push("Fan", childOf, "Adam");
         push("Fan", childOf, "Dotty");
         push("Harriet", childOf, "Fan");
         push("Harriet", childOf, "Greg");
+
+        push("Adam", parentOf, "Edward");
+        push("Dotty", parentOf, "Edward");
+        push("Adam", parentOf, "Fan");
+        push("Dotty", parentOf, "Fan");
+        push("Fan", parentOf, "Harriet");
+        push("Greg", parentOf, "Harriet");
+
+        return model;
     }
 
     public void push(String who, Property what, String whom) {
@@ -55,7 +84,21 @@ public class FamilyTree {
     }
 
 
-    public void exportModel(){
+    public static Boolean exportModel(Model model) {
+        File file = new File(References.FAMILY_PATH);
 
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            return false;
+        }
+        try (FileOutputStream fout = new FileOutputStream(file)) {
+            RDFWriter writer = model.getWriter("RDF/XML-ABBREV");
+            writer.write(model, fout, null);
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
     }
 }
