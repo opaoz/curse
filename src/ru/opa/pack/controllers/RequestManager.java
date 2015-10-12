@@ -15,8 +15,8 @@ public class RequestManager {
         FamilyTree familyTree = new FamilyTree();
         Model model = familyTree.getModel();
 
-        //jsonString = JSONHelper.generateJSONResponse(QueryExec.exec(request, model)).toJSONString();
-        jsonString = "Azazaaz";
+        jsonString = JSONHelper.generateJSONResponse(QueryExec.exec(request, model)).toJSONString();
+        //jsonString = "Azazaaz";
     }
 
     @Override

@@ -22,7 +22,7 @@ public class Main {
         try {
             new Server(8080).accept();
         } catch (IOException e) {
-            System.out.println("Server crashed"+e);
+            System.out.println("Server crashed" + e);
         }
     }
 }

@@ -25,7 +25,7 @@ public final class JSONHelper {
     public static JSONObject generateJSONObject(String[] vars, QuerySolution qs) {
         JSONObject result = new JSONObject();
         for (int i = 0; i < vars.length; i++) {
-            result.put(vars[i], qs.get(vars[i]));
+            result.put(vars[i], qs.get(vars[i]).toString());
         }
 
         return result;

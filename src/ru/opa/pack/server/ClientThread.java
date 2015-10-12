@@ -1,6 +1,5 @@
 package ru.opa.pack.server;
 
-import com.sun.rmi.rmid.ExecPermission;
 import ru.opa.pack.controllers.RequestManager;
 
 import java.io.*;
@@ -25,7 +24,9 @@ public class ClientThread implements Runnable {
     public void run() {
         try {
             readInputHeaders();
-            writeResponse(new RequestManager(request).toString());
+            if (!request.equals("none")) {
+                writeResponse(new RequestManager(request).toString());
+            }
         } catch (IOException t) {
             System.out.println("Socket error");
             System.out.println(t);
@@ -42,27 +43,24 @@ public class ClientThread implements Runnable {
     private void writeResponse(String message) throws IOException {
         String response = "HTTP/1.1 200 OK\r\n" +
                 "Server: YarServer/2009-09-09\r\n" +
-                "Content-Type: text/JSON\r\n" +
+                "Content-Type: text/json\r\n" +
                 "Content-Length: " + message.length() + "\r\n" +
+                "Access-Control-Allow-Origin: *\r\n" +
                 "Connection: close\r\n\r\n";
         String result = response + message;
+
         outputStream.write(result.getBytes());
         outputStream.flush();
     }
 
     private void readInputHeaders() throws IOException {
-        /*BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        System.out.println("Input");
-        //while (true) {
-        for(int i=0;i<20;i++){
-            request = br.readLine();
-            System.out.println(request);
-            *//*if (request == null) {
-                break;
-            }*//*
-        }*/
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String line = in.readLine();
+        if (line == null) {
+            in.close();
+            request = "none";
+            return;
+        }
         StringBuilder headers = new StringBuilder();
         StringBuilder body = new StringBuilder();
         boolean isPost = line.startsWith("POST");
