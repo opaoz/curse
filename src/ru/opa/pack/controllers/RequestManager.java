@@ -11,12 +11,11 @@ import ru.opa.pack.utils.QueryExec;
 public class RequestManager {
     private String jsonString;
 
-    public RequestManager(String request) {
-        FamilyTree familyTree = new FamilyTree();
-        Model model = familyTree.getModel();
+    private static FamilyTree familyTree = new FamilyTree();
+    private static Model model = familyTree.getModel();
 
+    public RequestManager(String request) {
         jsonString = JSONHelper.generateJSONResponse(QueryExec.exec(request, model)).toJSONString();
-        //jsonString = "Azazaaz";
     }
 
     @Override

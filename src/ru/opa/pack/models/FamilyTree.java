@@ -2,6 +2,7 @@ package ru.opa.pack.models;
 
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.util.FileManager;
+import ru.opa.pack.Main;
 import ru.opa.pack.references.References;
 
 import java.io.File;
@@ -26,9 +27,9 @@ public class FamilyTree {
 
         if (model == null) {
             model = reCreateModel();
-            System.out.println("Model was recreated...");
+            Main.ui.println("Model was recreated...");
         } else {
-            System.out.println("Model was loaded...");
+            Main.ui.println("Model was loaded...");
         }
     }
 

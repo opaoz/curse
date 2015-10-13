@@ -1,6 +1,7 @@
 package ru.opa.pack.server;
 
 import ru.opa.pack.references.References;
+import ru.opa.pack.views.ServerUI;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,20 +12,24 @@ import java.net.Socket;
  */
 public class Server {
     private ServerSocket serverSocket;
+    private ServerUI ui;
 
-    public Server(int port) throws IOException {
-        if (port < 0 || port > 60000) {
+    public Server(int port, ServerUI ui) throws IOException {
+        if (port < 0 || port > 65535) {
             port = References.DEFAULT_SERVER_PORT;
-            System.out.println("Server port changet to default value - " + port);
+            ui.println("Server port changed to default value - " + port);
         }
+
+        this.ui = ui;
         serverSocket = new ServerSocket(port);
+        ui.println("Server started...");
     }
 
-    public void accept() throws IOException {
+    public void start() throws IOException {
         while (true) {
             Socket socket = serverSocket.accept();
-            System.out.println("Client connected with " + socket.getLocalSocketAddress());
-            new ClientThread(socket);
+            ui.println("Client connected with " + socket.getLocalSocketAddress());
+            new ClientThread(socket, ui);
         }
     }
 }

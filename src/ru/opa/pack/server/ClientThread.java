@@ -1,6 +1,7 @@
 package ru.opa.pack.server;
 
 import ru.opa.pack.controllers.RequestManager;
+import ru.opa.pack.views.ServerUI;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,11 +14,13 @@ public class ClientThread implements Runnable {
     private InputStream inputStream;
     private OutputStream outputStream;
     private String request;
+    private ServerUI ui;
 
-    protected ClientThread(Socket socket) throws IOException {
+    protected ClientThread(Socket socket, ServerUI ui) throws IOException {
         this.socket = socket;
         this.inputStream = socket.getInputStream();
         this.outputStream = socket.getOutputStream();
+        this.ui = ui;
         new Thread(this).start();
     }
 
@@ -28,16 +31,16 @@ public class ClientThread implements Runnable {
                 writeResponse(new RequestManager(request).toString());
             }
         } catch (IOException t) {
-            System.out.println("Socket error");
-            System.out.println(t);
+            ui.println("Socket error");
+            ui.println(t.toString());
         } finally {
             try {
                 socket.close();
             } catch (Throwable t) {
-                System.out.println("Socket closing error");
+                ui.println("Socket closing error");
             }
         }
-        System.err.println("Client processing finished");
+        ui.println("Client processing finished");
     }
 
     private void writeResponse(String message) throws IOException {
@@ -88,6 +91,6 @@ public class ClientThread implements Runnable {
         }
 
         request = body.toString();
-        System.out.println(request);
+        ui.println(request);
     }
 }
