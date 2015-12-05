@@ -10,9 +10,10 @@ import java.util.Map;
 
 
 /**
- * @author Владимир
+ * @author пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  *         11.10.2015
  */
+//toDELETE
 public final class QueryExec {
     public static final Map<String[], List<QuerySolution>> exec(String queryString, Model model) {
         Query query = QueryFactory.create(queryString);
@@ -28,7 +29,6 @@ public final class QueryExec {
             }
 
             result.put(resultVars.toArray(new String[resultVars.size()]), results);
-            //ResultSetFormatter.out(System.out, results);
             return result;
         }
     }
