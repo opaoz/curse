@@ -5,12 +5,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 /**
- * @author Владимир
+ * @author пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  *         11.10.2015
  */
 public final class References {
     /*Model*/
-    public static final String GEO_NAMES_PATH = "D:/GeoNames/ontology_v3.1.rdf";
     public static final String FAMILY_PATH = "D:/Family/family.rdf";
 
     /*Server*/

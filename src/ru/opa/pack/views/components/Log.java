@@ -10,7 +10,6 @@ import java.util.Date;
 public class Log extends JPanel {
     private static final long serialVersionUID = -7968405633747657642L;
     private JTextArea text;
-    private JScrollPane scroll;
     private DateFormat dateFormat = References.DATE_FORMAT;
 
 
@@ -18,17 +17,15 @@ public class Log extends JPanel {
         text = new JTextArea();
         text.setAlignmentX(LEFT_ALIGNMENT);
         text.setAlignmentY(TOP_ALIGNMENT);
-        text.setPreferredSize(getPreferredSize());
         text.setBackground(Color.BLACK);
         text.setForeground(Color.WHITE);
         text.setFont(References.LOG_FONT);
+        text.setLineWrap(true);
+        text.setWrapStyleWord(true);
 
-        scroll = new JScrollPane(text);
-        scroll.setBounds(10, 60, 780, 500);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-        this.add(text);
-        this.add(scroll);
+        JScrollPane scrollPane = new JScrollPane(text);
+        scrollPane.setPreferredSize(new Dimension(500, 200));
+        this.add(scrollPane);
         this.setVisible(true);
     }
 
