@@ -1,8 +1,10 @@
 package ru.opa.pack.models;
 
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.util.FileManager;
 import ru.opa.pack.Main;
+import ru.opa.pack.api.*;
 import ru.opa.pack.references.References;
 
 import java.io.File;
@@ -13,23 +15,19 @@ import java.util.*;
 
 
 /**
- * @author Владимир
+ * @author пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  *         11.10.2015
  */
-public class FamilyTree {
+public class FamilyTree extends ru.opa.pack.api.Model {
     public static final String FAMILY_URI = "http://family/";
     public static final String RELATIONSHIP_URI = "http://purl.org/vocab/relationship/";
-    private Map<String, Resource> family = new HashMap<String, Resource>();
-    private Model model;
+    private Map<String, Resource> family = new HashMap<>();
 
     public FamilyTree() {
-        model = FileManager.get().loadModel(References.FAMILY_PATH);
-
+        super(References.FAMILY_PATH);
         if (model == null) {
             model = reCreateModel();
-            Main.ui.println("Model was recreated...");
-        } else {
-            Main.ui.println("Model was loaded...");
+            exportModel(model);
         }
     }
 
@@ -52,54 +50,27 @@ public class FamilyTree {
         family.put("Greg", model.createResource(FAMILY_URI + "greg"));
         family.put("Harriet", model.createResource(FAMILY_URI + "harriet"));
 
-        push("Adam", spouseOf, "Dotty");
-        push("Beth", spouseOf, "Chuck");
-        push("Fan", spouseOf, "Greg");
+        push("Adam", spouseOf, "Dotty", family);
+        push("Beth", spouseOf, "Chuck", family);
+        push("Fan", spouseOf, "Greg", family);
 
-        push("Adam", siblingOf, "Beth");
-        push("Edward", siblingOf, "Fan");
+        push("Adam", siblingOf, "Beth", family);
+        push("Edward", siblingOf, "Fan", family);
 
-        push("Edward", childOf, "Adam");
-        push("Edward", childOf, "Dotty");
-        push("Fan", childOf, "Adam");
-        push("Fan", childOf, "Dotty");
-        push("Harriet", childOf, "Fan");
-        push("Harriet", childOf, "Greg");
+        push("Edward", childOf, "Adam", family);
+        push("Edward", childOf, "Dotty", family);
+        push("Fan", childOf, "Adam", family);
+        push("Fan", childOf, "Dotty", family);
+        push("Harriet", childOf, "Fan", family);
+        push("Harriet", childOf, "Greg", family);
 
-        push("Adam", parentOf, "Edward");
-        push("Dotty", parentOf, "Edward");
-        push("Adam", parentOf, "Fan");
-        push("Dotty", parentOf, "Fan");
-        push("Fan", parentOf, "Harriet");
-        push("Greg", parentOf, "Harriet");
+        push("Adam", parentOf, "Edward", family);
+        push("Dotty", parentOf, "Edward", family);
+        push("Adam", parentOf, "Fan", family);
+        push("Dotty", parentOf, "Fan", family);
+        push("Fan", parentOf, "Harriet", family);
+        push("Greg", parentOf, "Harriet", family);
 
         return model;
-    }
-
-    public void push(String who, Property what, String whom) {
-        model.add(model.createStatement(family.get(who), what, family.get(whom)));
-    }
-
-    public Model getModel() {
-        return model;
-    }
-
-
-    public static Boolean exportModel(Model model) {
-        File file = new File(References.FAMILY_PATH);
-
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            return false;
-        }
-        try (FileOutputStream fout = new FileOutputStream(file)) {
-            RDFWriter writer = model.getWriter("RDF/XML-ABBREV");
-            writer.write(model, fout, null);
-        } catch (IOException e) {
-            return false;
-        }
-
-        return true;
     }
 }

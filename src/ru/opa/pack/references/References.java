@@ -9,12 +9,16 @@ import java.text.SimpleDateFormat;
  *         11.10.2015
  */
 public final class References {
-    /*Model*/
+    /*Models*/
     public static final String FAMILY_PATH = "D:/Family/family.rdf";
+    public static final String MODEL_PATH = "D:/Curse/curse.rdf";
 
-    /*Server*/
+    /*BackEnd*/
     public static final int DEFAULT_SERVER_PORT = 8080;
     public static final int SERVER_PORT = 8080;
+
+    /*FrontEnd*/
+    public static final String FRONT_END_FOLDER = "app";
 
     /*Log*/
     public static final Font LOG_FONT = new Font("Verdana", Font.BOLD, 12);

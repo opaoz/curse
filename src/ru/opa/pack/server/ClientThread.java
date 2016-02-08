@@ -2,6 +2,7 @@ package ru.opa.pack.server;
 
 import ru.opa.pack.controllers.RequestManager;
 import ru.opa.pack.net.HttpResponse;
+import ru.opa.pack.references.References;
 import ru.opa.pack.views.ServerUI;
 
 import java.io.*;
@@ -35,7 +36,7 @@ public class ClientThread implements Runnable {
                     HttpResponse.writeResponse(new RequestManager(request).toString(), outputStream);
                 }
             } else if (line.startsWith("GET")) {
-                HttpResponse.sendFileGET(outputStream, line);
+                HttpResponse.sendFileGET(outputStream, line, References.FRONT_END_FOLDER);
             }
         } catch (IOException t) {
             ui.println("Socket error");
@@ -47,6 +48,6 @@ public class ClientThread implements Runnable {
                 ui.println("Socket closing error");
             }
         }
-        ui.println("Client processing finished");
+        //ui.println("Client processing finished");
     }
 }

@@ -1,6 +1,7 @@
 package ru.opa.pack.controllers;
 
 import org.apache.jena.rdf.model.Model;
+import ru.opa.pack.models.Cities;
 import ru.opa.pack.models.FamilyTree;
 import ru.opa.pack.util.JSONHelper;
 import ru.opa.pack.util.QueryExec;
@@ -12,8 +13,9 @@ import ru.opa.pack.util.QueryExec;
 public class RequestManager {
     private String jsonString;
 
-    private static FamilyTree familyTree = new FamilyTree();
-    private static Model model = familyTree.getModel();
+    //new FamilyTree();
+    private static ru.opa.pack.api.Model md = new Cities();
+    private static Model model = md.getModel();
 
     public RequestManager(String request) {
         jsonString = JSONHelper.generateJSONResponse(QueryExec.exec(request, model));

@@ -28,7 +28,7 @@ public class Server {
     public void start() throws IOException {
         while (true) {
             Socket socket = serverSocket.accept();
-            ui.println("Client connected with " + socket.getLocalSocketAddress());
+            //ui.println("Client connected with " + socket.getLocalSocketAddress());
             new ClientThread(socket, ui);
         }
     }
