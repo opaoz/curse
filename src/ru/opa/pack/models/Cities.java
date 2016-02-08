@@ -49,6 +49,7 @@ public class Cities extends ru.opa.pack.api.Model {
                 .addProperty(properties.get("latitude"), "51,32")
                 .addProperty(properties.get("longitude"), "46")
                 .addProperty(properties.get("year"), "1590")
+                .addProperty(properties.get("type"), "City")
                 .addProperty(properties.get("year"), "2016");
 
         return model;
