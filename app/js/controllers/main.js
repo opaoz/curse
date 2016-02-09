@@ -8,6 +8,8 @@
 (function () {
     angular.module('App').controller('MainController', ['config', '_', 'httpRequest', function (config, _, httpRequest) {
         var vm = this;
+        vm.markers = [];
+        vm.year = 1990;
 
         vm._init_ = function () {
             vm.map = {
@@ -32,6 +34,11 @@
                 '   }' +
                 '}').then(function (response) {
                 console.log(response.data);
+                vm.markers = vm.markers.concat(_.map(response.data, function (value) {
+                    value.lat = value.lat.replace(',', '.');
+                    value.long = value.long.replace(',', '.');
+                    return value;
+                }));
             });
         };
 

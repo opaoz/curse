@@ -46,7 +46,7 @@ public class Cities extends ru.opa.pack.api.Model {
         cities.put("Saratov", model.createResource(CITIES_URI + "saratov"));
         cities.get("Saratov")
                 .addProperty(properties.get("name"), "Saratov")
-                .addProperty(properties.get("latitude"), "51,32")
+                .addProperty(properties.get("latitude"), "51.32")
                 .addProperty(properties.get("longitude"), "46")
                 .addProperty(properties.get("year"), "1590")
                 .addProperty(properties.get("type"), "City")
