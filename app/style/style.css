@@ -1,5 +1,17 @@
-.map {
+.map, .year-slider, .types-slider {
     width: 800px;
-    height: 470px;
     margin: 0 auto;
+}
+
+.year-slider {
+    background: lightgray;
+    padding: 5px;
+}
+
+.map {
+    height: 470px;
+}
+
+.cp {
+    cursor: pointer;
 }

@@ -20,7 +20,9 @@
     "angular": "~1.4.7",
     "bootstrap": "~3.3.5",
     "angular-google-maps": "~2.2.1",
-    "ngmap": "~1.13.15"
+    "ngmap": "~1.13.15",
+    "angular-ui-bootstrap": "~1.2.1",
+    "angular-bootstrap-slider": "~0.1.26"
   },
   "devDependencies": {
     "angular": "~1.4.7"

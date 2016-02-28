@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Map</title>
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css">
     <link rel="stylesheet" href="style/style.css"/>
     <style>
         html, body {
@@ -18,7 +19,27 @@
     </shape>-->
     <marker ng-repeat="mark in vm.markers" position="[{{mark.lat}}, {{mark.long}}]" title="{{mark.name}}"></marker>
 </map>
-<slider ng-model="vm.year" min="1540" max="2016"></slider>
+<div class="year-slider" ng-init="isYearCollapsed=true">
+    <div class="text-center h4 cp" style="display:block;" ng-click="isYearCollapsed = !isYearCollapsed">Year selector
+    </div>
+    <div uib-collapse="isYearCollapsed">
+        <slider ng-model="vm.year" step="1" min="vm.minYear" max="vm.MAX_YEAR" value="Year"
+                tooltip="show"></slider>
+        <div class="labels clearfix"><span class="pull-left">{{vm.minYear}}</span><span class="pull-right">{{vm.MAX_YEAR}}</span>
+        </div>
+    </div>
+</div>
+<div class="types-slider" ng-init="isTypeCollapsed=true">
+    <div class="text-center h4 cp" style="display:block;" ng-click="isTypeCollapsed = !isTypeCollapsed">Type selector
+    </div>
+    <div uib-collapse="isTypeCollapsed">
+        <div class="checkbox" ng-repeat="(k,v) in vm.types track by $index">
+            <label>
+                <input type="checkbox" ng-model="vm.types[k]"> {{k}}
+            </label>
+        </div>
+    </div>
+</div>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="bower_components/lodash/lodash.js"></script>
@@ -36,6 +57,7 @@
 <!--Services-->
 <script src="js/services/http-request.js"></script>
 <script src="js/services/lodash.js"></script>
+<script src="js/services/simple-tmpl.js"></script>
 
 <!--Filters-->
 <script src="js/filters/code-formatter.js"></script>
