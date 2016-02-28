@@ -10,8 +10,10 @@
         function (config, _, httpRequest, $scope, requests, simpleTmpl) {
             var vm = this;
             vm.markers = [];
-            vm.year = 1990;
-            vm.types = {'City': false, 'Village': false};
+            vm.year = [];
+            vm.types = {'City': false, 'Village': false, 'Bowery': false};
+            vm.objects = {'Church': false, 'Museum': false, 'Reading home': false};
+            vm.nearest = {'River': false, 'Mountain': false, 'Pool': false};
             vm.MAX_YEAR = new Date().getFullYear();
 
             vm._init_ = function () {
@@ -29,7 +31,7 @@
 
             function send() {
                 httpRequest.send(simpleTmpl.format(requests.getByParams, {
-                    year: vm.year,
+                    year: getFormattedYear(vm.year),
                     types: getFormattedType(vm.types)
                 })).then(function (response) {
                     console.log(response.data);
@@ -47,6 +49,7 @@
             function getMinYear() {
                 httpRequest.send(requests.getMinYear).then(function (response) {
                     vm.minYear = response.data[0].minYear;
+                    vm.year = [vm.minYear, vm.MAX_YEAR];
                 });
             }
 
@@ -64,6 +67,10 @@
                 });
 
                 return result.length == 1 ? '' : result.join(' ');
+            }
+
+            function getFormattedYear(value) {
+                return '?year >= "' + value[0] + '" && ?year <= "' + value[1] + '"';
             }
 
             $scope.$watch('vm.year', _.debounce(send, 500));

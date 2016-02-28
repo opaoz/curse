@@ -1,10 +1,13 @@
-.map, .year-slider, .types-slider {
+/*.map, .year-slider, .types-slider {
     width: 800px;
     margin: 0 auto;
+}*/
+
+.lig {
+    background: lightgray;
 }
 
-.year-slider {
-    background: lightgray;
+.h4 {
     padding: 5px;
 }
 

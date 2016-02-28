@@ -20,7 +20,7 @@
                 '      select (group_concat(?type) as ?types) (group_concat(?year) as ?years) WHERE {' +
                 '          ?city r:year ?year;' +
                 '                r:type ?type.' +
-                'FILTER (?year <= "<%= year %>" <%= types %>)' +
+                'FILTER (<%= year %> <%= types %>)' +
                 '      } GROUP BY ?city' +
                 '   }' +
                 '}';
