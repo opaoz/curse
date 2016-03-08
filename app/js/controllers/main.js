@@ -88,7 +88,7 @@
                         value.pos = [value.lat, value.long];
                         value.type = _.uniq(value.type.split(','));
                         value.nearest = _.uniq(value.nearest.split(','));
-                        value.objects = _.uniq(value.objects.split(','));
+                        value.objects = value.objects ? _.uniq(value.objects.split(',')) : [];
                         value.minYear = +value.minYear;
                         value.maxYear = +value.maxYear;
 
