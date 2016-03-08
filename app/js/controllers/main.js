@@ -6,15 +6,23 @@
  * @date 12.10.2015
  */
 (function () {
-    angular.module('App').controller('MainController', ['config', '_', 'httpRequest', '$scope', 'requests', 'simpleTmpl',
-        function (config, _, httpRequest, $scope, requests, simpleTmpl) {
+    angular.module('App').controller('MainController', ['config', '_', 'httpRequest', '$scope', 'requests', 'simpleTmpl', '$timeout',
+        function (config, _, httpRequest, $scope, requests, simpleTmpl, $timeout) {
             var vm = this;
             vm.markers = [];
+            vm.originalMarkers = [];
             vm.year = [];
-            vm.types = {'City': false, 'Village': false, 'Bowery': false};
-            vm.objects = {'Church': false, 'Museum': false, 'Reading home': false};
-            vm.nearest = {'River': false, 'Mountain': false, 'Pool': false};
+            vm.types = {/*'Город': false, 'Деревня': false, 'Хутор': false*/};
+            vm.objects = {/*'Церковь': false, 'Музей': false, 'Изба-читальня': false*/};
+            vm.nearest = {/*'Река': false, 'Гора': false, 'Пруд': false, 'ПГТ': false*/};
             vm.MAX_YEAR = new Date().getFullYear();
+
+            vm.selected = false;
+
+            $scope.$watch('vm.year', _.debounce(filt, 500));
+            $scope.$watch('vm.types', _.debounce(filt, 500), true);
+            $scope.$watch('vm.nearest', _.debounce(filt, 500), true);
+            $scope.$watch('vm.objects', _.debounce(filt, 500), true);
 
             vm._init_ = function () {
                 vm.map = {
@@ -29,20 +37,81 @@
                 vm.paths = formatCoords(config.coordArray);
             };
 
+            vm.clickOnMarker = function (event, index) {
+                //console.log(arguments);
+                vm.selected = vm.markers[index];
+            };
+
+            function filt() {
+                vm.markers = [];
+                !$scope.$$phase && $scope.$apply();
+                $timeout(function () {
+                    vm.markers = angular.copy(_.filter(vm.originalMarkers, function (value) {
+                        return (value.minYear <= vm.year[1] && value.maxYear >= vm.year[0]) &&
+                            checkProp(vm.types, value.type) &&
+                            checkProp(vm.nearest, value.nearest) &&
+                            checkProp(vm.objects, value.objects);
+                    }));
+                    $scope.$apply();
+                });
+
+
+                function checkProp(object, array) {
+                    var has = true, needs = [];
+                    _.each(object, function (value, key) {
+                        if (value) {
+                            needs.push(key);
+                        }
+                    });
+
+                    if (needs.length) {
+                        has = false;
+                        _.each(needs, function (val) {
+                            if (array.indexOf(val) !== -1) {
+                                has = true;
+                            }
+                        });
+                    }
+
+                    return has
+                }
+            }
+
             function send() {
-                httpRequest.send(simpleTmpl.format(requests.getByParams, {
-                    year: getFormattedYear(vm.year),
-                    types: getFormattedType(vm.types)
-                })).then(function (response) {
+                httpRequest.send(requests.getByParams).then(function (response) {
                     console.log(response.data);
-                    vm.markers = _.compact(_.map(response.data, function (value) {
+                    var types = [], nearest = [], objects = [];
+
+                    vm.originalMarkers = _.compact(_.map(response.data, function (value) {
                         value.lat = value.lat.replace(',', '.');
                         value.long = value.long.replace(',', '.');
-                        if (!value.years || value.years.length <= 0 || !value.types || value.types.length <= 0) {
-                            return null;
-                        }
+                        value.pos = [value.lat, value.long];
+                        value.type = _.uniq(value.type.split(','));
+                        value.nearest = _.uniq(value.nearest.split(','));
+                        value.objects = _.uniq(value.objects.split(','));
+                        value.minYear = +value.minYear;
+                        value.maxYear = +value.maxYear;
+
+                        types = _.concat(types, value.type);
+                        nearest = _.concat(nearest, value.nearest);
+                        objects = _.concat(objects, value.objects);
+
                         return value;
                     }));
+
+                    _.each(_.uniq(types), function (value) {
+                        vm.types[value] = false;
+                    });
+
+                    _.each(_.uniq(nearest), function (value) {
+                        vm.nearest[value] = false;
+                    });
+
+                    _.each(_.uniq(objects), function (value) {
+                        vm.objects[value] = false;
+                    });
+
+                    filt();
                 });
             }
 
@@ -53,28 +122,6 @@
                 });
             }
 
-            function getFormattedType(value) {
-                var result = ['&&'];
-
-                _.each(value, function (value, key) {
-                    var str = '?type = "' + key + '"';
-                    if (value) {
-                        if (result.length > 1) {
-                            str = '|| ' + str;
-                        }
-                        result.push(str);
-                    }
-                });
-
-                return result.length == 1 ? '' : result.join(' ');
-            }
-
-            function getFormattedYear(value) {
-                return '?year >= "' + value[0] + '" && ?year <= "' + value[1] + '"';
-            }
-
-            $scope.$watch('vm.year', _.debounce(send, 500));
-            $scope.$watch('vm.types', _.debounce(send, 500), true);
 
             function formatCoords(coords) {
                 return _.map(angular.fromJson(coords), function (value) {

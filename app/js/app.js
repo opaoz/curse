@@ -15,20 +15,26 @@
                 'SELECT * WHERE {' +
                 '   ?city r:latitude ?lat; ' +
                 '         r:longitude ?long;' +
+                '         r:desc ?desc;' +
+                '         r:culture ?objects;' +
+                '         r:type ?type;' +
+                '         r:nearest ?nearest;' +
+                '         r:minYear ?minYear;' +
+                '         r:maxYear ?maxYear;' +
                 '         r:name ?name.' +
-                '   {' +
-                '      select (group_concat(?type) as ?types) (group_concat(?year) as ?years) WHERE {' +
-                '          ?city r:year ?year;' +
-                '                r:type ?type.' +
-                'FILTER (<%= year %> <%= types %>)' +
-                '      } GROUP BY ?city' +
-                '   }' +
+                /*'   {' +
+                 '      select (group_concat(?type) as ?types) (group_concat(?nearest) as ?nearests) WHERE {' +
+                 '          ?city r:type ?type;' +
+                 '                r:nearest ?nearest.' +
+                 'FILTER (<%= year %> <%= types %>)' +
+                 '      } GROUP BY ?city' +
+                 '   }' +*/
                 '}';
 
             request.getMinYear =
                 'PREFIX r: <http://purl.org/vocab/relationship/>' +
                 'SELECT (MIN(?year) as ?minYear) WHERE{' +
-                '   ?city r:year ?year' +
+                '   ?city r:minYear ?year' +
                 '}';
 
             return request;
