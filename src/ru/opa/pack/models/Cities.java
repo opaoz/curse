@@ -47,7 +47,8 @@ public class Cities extends ru.opa.pack.api.Model {
                 "nearest",
                 "culture",
                 "minYear",
-                "maxYear"
+                "maxYear",
+                "group"
         });
 
         cities.put("Saratov", model.createResource(CITIES_URI + "saratov"));
@@ -57,6 +58,7 @@ public class Cities extends ru.opa.pack.api.Model {
                 .addProperty(properties.get("longitude"), "46")
                 .addProperty(properties.get("minYear"), "1590")
                 .addProperty(properties.get("maxYear"), "2016")
+                .addProperty(properties.get("group"), "saratov")
                 //.addProperty(properties.get("image"), "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Coat_of_Arms_of_Saratov.svg/800px-Coat_of_Arms_of_Saratov.svg.png")
                 .addProperty(properties.get("desc"), "Основан как сторожевая крепость для охраны южных рубежей Российского государства в 1590 году, в царствование Фёдора Иоанновича. Во второй половине XVIII века — крупный перевалочный пункт и центр торговли рыбой и солью, а с XIX века — один из центров торговли зерном. Губернский город с 1780 года, в начале XX века — крупнейший по численности жителей город на Волге.")
                 .addProperty(properties.get("type"), "Город")
@@ -69,6 +71,7 @@ public class Cities extends ru.opa.pack.api.Model {
                 .addProperty(properties.get("latitude"), "51.12")
                 .addProperty(properties.get("minYear"), "1940")
                 .addProperty(properties.get("maxYear"), "2016")
+                .addProperty(properties.get("group"), "ozinki")
                 //.addProperty(properties.get("image"), "http://www.hrono.ru/heraldicum/russia/subjects/towns/images/ozinki.gif")
                 .addProperty(properties.get("longitude"), "49.42")
                 .addProperty(properties.get("desc"), "Посёлок городского типа, административный центр, крупнейший населённый пункт Озинского района Саратовской области и одноимённая железнодорожная станция Приволжской железной дороги на стыке с КТЖ.\n" +
@@ -83,6 +86,7 @@ public class Cities extends ru.opa.pack.api.Model {
                 .addProperty(properties.get("name"), "Посёлок Озинский")
                 .addProperty(properties.get("latitude"), "51.12")
                 .addProperty(properties.get("longitude"), "49.42")
+                .addProperty(properties.get("group"), "ozinki")
                 .addProperty(properties.get("minYear"), "1873")
                 .addProperty(properties.get("maxYear"), "1940")
                 .addProperty(properties.get("desc"), "Хутор Озинский основан в 1873 году.\n" +
@@ -91,22 +95,21 @@ public class Cities extends ru.opa.pack.api.Model {
                         "\n" +
                         "Статус посёлка городского типа — с 1940 года.")
                 .addProperty(properties.get("type"), "Посёлок,Хутор")
-                //.addProperty(properties.get("image"), "http://www.hrono.ru/heraldicum/russia/subjects/towns/images/ozinki.gif")
                 .addProperty(properties.get("culture"), "Церковь")
                 .addProperty(properties.get("nearest"), "Пруд,Река");
 
         cities.put("Balashov", model.createResource(CITIES_URI + "balashov"));
         cities.get("Balashov")
                 .addProperty(properties.get("name"), "Балашов")
-                .addProperty(properties.get("latitude"), "51.33")
+                .addProperty(properties.get("latitude"), "51.34")
                 .addProperty(properties.get("longitude"), "43.10")
                 .addProperty(properties.get("minYear"), "1780")
                 .addProperty(properties.get("maxYear"), "2016")
+                .addProperty(properties.get("group"), "balashow")
                 .addProperty(properties.get("desc"), "Город расположен на восточной окраине Окско-Донской равнины, на реке Хопёр (приток Дона), на пересечении железнодорожных линий Тамбов — Камышин и Поворино — Пенза, в 210 км к западу от Саратова.\n" +
                         "Через город протекает одна из красивейших рек средней полосы России — Хопёр, которая делит Балашов на две неравные части — частный сектор и центральный, с постройками городского типа.")
                 .addProperty(properties.get("type"), "Город,Уездный город")
-                //.addProperty(properties.get("image"), "https://upload.wikimedia.org/wikipedia/commons/2/23/Coat_of_Arms_of_Balashov_%28Saratov_oblast%29.png")
-                .addProperty(properties.get("culture"), "Музей,Кинотеатры,Парки")
+                .addProperty(properties.get("culture"), "Музей,Памятник")
                 .addProperty(properties.get("nearest"), "Равнина,Река");
 
         cities.put("BalashovH", model.createResource(CITIES_URI + "balashov_h"));
@@ -116,10 +119,10 @@ public class Cities extends ru.opa.pack.api.Model {
                 .addProperty(properties.get("longitude"), "43.10")
                 .addProperty(properties.get("minYear"), "1768")
                 .addProperty(properties.get("maxYear"), "1780")
+                .addProperty(properties.get("group"), "balashow")
                 .addProperty(properties.get("desc"), "Город расположен на восточной окраине Окско-Донской равнины, на реке Хопёр (приток Дона), на пересечении железнодорожных линий Тамбов — Камышин и Поворино — Пенза, в 210 км к западу от Саратова.\n" +
                         "Через город протекает одна из красивейших рек средней полосы России — Хопёр, которая делит Балашов на две неравные части — частный сектор и центральный, с постройками городского типа.")
                 .addProperty(properties.get("type"), "Хутор")
-                //.addProperty(properties.get("image"), "https://upload.wikimedia.org/wikipedia/commons/2/23/Coat_of_Arms_of_Balashov_%28Saratov_oblast%29.png")
                 .addProperty(properties.get("culture"), "")
                 .addProperty(properties.get("nearest"), "Равнина,Река");
         return model;

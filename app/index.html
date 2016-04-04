@@ -11,10 +11,22 @@
             height: 100%;
             width: 100%;
         }
+
+        .input-group {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body ng-controller="MainController as vm" ng-init="vm._init_()">
 <div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">&#128269;</span>
+                <input type="text" class="form-control" ng-model="vm.searchString" placeholder="Саратов">
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <map center="{{vm.map.center | LonLat}}" zoom="{{vm.map.zoom}}" class="map">
@@ -25,22 +37,28 @@
                 <custom-marker ng-repeat="mark in vm.markers track by $index"
                                id="custom-marker-{{$index}}"
                                on-click="vm.clickOnMarker($index)"
-                               position="{{mark.pos}}">
+                               position="{{mark.max.pos}}">
                     <div>
-                        <span class="circle"></span> {{mark.name}}
+                        <span class="circle"></span> {{mark.max.name}}
                     </div>
                 </custom-marker>
             </map>
         </div>
     </div>
-    <div class="row" ng-show="vm.selected">
+    <div class="row" ng-show="vm.selected.max">
         <div class="col-xs-12">
             <div class="jumbotron">
-                <h1>{{vm.selected.name}}</h1>
-                <p>{{vm.selected.desc}}</p>
-                <p ng-if="vm.selected.type">Тип: {{vm.selected.type.join(', ')}}</p>
-                <p ng-if="vm.selected.nearest">Близлежащие объекты: {{vm.selected.nearest.join(', ')}}</p>
-                <p>Годы существования: {{vm.selected.minYear + ' - ' + vm.selected.maxYear}}</p>
+                <h1>{{vm.selected.max.name}}</h1>
+                <p>{{vm.selected.max.desc}}</p>
+                <p ng-if="vm.selected.max.type">Тип: {{vm.selected.max.type.join(', ')}}</p>
+                <p ng-if="vm.selected.max.nearest">Близлежащие объекты: {{vm.selected.max.nearest.join(', ')}}</p>
+                <p>Годы существования: {{vm.selected.max.minYear + ' - ' + vm.selected.max.maxYear}}</p>
+                <p>Координаты: {{vm.selected.max.pos.join(', ')}}</p>
+                <p ng-if="vm.selected.array.length>1">Сопутствующие названия:
+                    <a ng-repeat="ps in vm.selected.array track by $index"
+                       style="cursor: pointer;"
+                       ng-click="vm.selected.max=ps" ng-if="ps.name!==vm.selected.max.name">{{ps.name}}</a>
+                </p>
             </div>
         </div>
     </div>
@@ -95,7 +113,7 @@
         <div class="col-xs-12">
             <div class="culture-slider " ng-init="isNearestCollapsed=true">
                 <div class="text-center h4 cp" style="display:block;"
-                     ng-click="isNearestCollapsed = !isNearestCollapsed">Выбор близлежащих культурных объектов
+                     ng-click="isNearestCollapsed = !isNearestCollapsed">Выбор близлежащих природных объектов
                 </div>
                 <div uib-collapse="isNearestCollapsed" class="row">
                     <div class="col-xs-3" ng-repeat="(k,v) in vm.nearest track by $index">
@@ -105,6 +123,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <button class="btn btn-block" ng-click="vm.downloadCSV()">Скачать отчёт</button>
         </div>
     </div>
 </div>
@@ -126,6 +149,7 @@
 <script src="js/services/http-request.js"></script>
 <script src="js/services/lodash.js"></script>
 <script src="js/services/simple-tmpl.js"></script>
+<script src="js/services/excel.js"></script>
 
 <!--Filters-->
 <script src="js/filters/code-formatter.js"></script>

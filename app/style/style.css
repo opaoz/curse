@@ -70,3 +70,12 @@
 custom-marker {
     display: none;
 }
+
+[class*="slider"] {
+    padding: 5px 0;
+}
+
+.text-center {
+    margin: 0;
+    padding: 10px 0;
+}

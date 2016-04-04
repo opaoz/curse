@@ -17,6 +17,7 @@
                 '         r:longitude ?long;' +
                 '         r:desc ?desc;' +
                 '         r:culture ?objects;' +
+                '         r:group ?group;' +
                 '         r:type ?type;' +
                 '         r:nearest ?nearest;' +
                 '         r:minYear ?minYear;' +

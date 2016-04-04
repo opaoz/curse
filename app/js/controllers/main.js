@@ -6,8 +6,8 @@
  * @date 12.10.2015
  */
 (function () {
-    angular.module('App').controller('MainController', ['config', '_', 'httpRequest', '$scope', 'requests', 'simpleTmpl', '$timeout',
-        function (config, _, httpRequest, $scope, requests, simpleTmpl, $timeout) {
+    angular.module('App').controller('MainController', ['config', '_', 'httpRequest', '$scope', 'requests', 'simpleTmpl', '$timeout', 'csv',
+        function (config, _, httpRequest, $scope, requests, simpleTmpl, $timeout, csv) {
             var vm = this;
             vm.markers = [];
             vm.originalMarkers = [];
@@ -16,10 +16,12 @@
             vm.objects = {/*'Церковь': false, 'Музей': false, 'Изба-читальня': false*/};
             vm.nearest = {/*'Река': false, 'Гора': false, 'Пруд': false, 'ПГТ': false*/};
             vm.MAX_YEAR = new Date().getFullYear();
+            vm.searchString = '';
 
             vm.selected = false;
 
             $scope.$watch('vm.year', _.debounce(filt, 500));
+            $scope.$watch('vm.searchString', _.debounce(filt, 500));
             $scope.$watch('vm.types', _.debounce(filt, 500), true);
             $scope.$watch('vm.nearest', _.debounce(filt, 500), true);
             $scope.$watch('vm.objects', _.debounce(filt, 500), true);
@@ -42,16 +44,32 @@
                 vm.selected = vm.markers[index];
             };
 
+            vm.downloadCSV = function () {
+                csv.JSONToCSVConvertor(vm.markers, 'Report', true);
+            };
+
             function filt() {
                 vm.markers = [];
                 !$scope.$$phase && $scope.$apply();
                 $timeout(function () {
                     vm.markers = angular.copy(_.filter(vm.originalMarkers, function (value) {
+                        var searchStr = true;
+                        if (vm.searchString) {
+                            searchStr = value.name.toLowerCase().replace('ё', 'е').indexOf(vm.searchString.toLowerCase().replace('ё', 'е')) !== -1
+                        }
+
                         return (value.minYear <= vm.year[1] && value.maxYear >= vm.year[0]) &&
                             checkProp(vm.types, value.type) &&
                             checkProp(vm.nearest, value.nearest) &&
-                            checkProp(vm.objects, value.objects);
+                            checkProp(vm.objects, value.objects) && searchStr;
                     }));
+
+                    fillFilters(vm.markers);
+
+                    vm.markers = _.map(_.groupBy(vm.markers, 'group'), function (value) {
+                        return {array: value, max: _.maxBy(value, 'maxYear')};
+                    });
+
                     $scope.$apply();
                 });
 
@@ -80,7 +98,6 @@
             function send() {
                 httpRequest.send(requests.getByParams).then(function (response) {
                     console.log(response.data);
-                    var types = [], nearest = [], objects = [];
 
                     vm.originalMarkers = _.compact(_.map(response.data, function (value) {
                         value.lat = value.lat.replace(',', '.');
@@ -92,27 +109,68 @@
                         value.minYear = +value.minYear;
                         value.maxYear = +value.maxYear;
 
-                        types = _.concat(types, value.type);
-                        nearest = _.concat(nearest, value.nearest);
-                        objects = _.concat(objects, value.objects);
-
                         return value;
                     }));
 
-                    _.each(_.uniq(types), function (value) {
-                        vm.types[value] = false;
-                    });
-
-                    _.each(_.uniq(nearest), function (value) {
-                        vm.nearest[value] = false;
-                    });
-
-                    _.each(_.uniq(objects), function (value) {
-                        vm.objects[value] = false;
-                    });
-
                     filt();
                 });
+            }
+
+            function fillFilters(array) {
+                var types = [], nearest = [], objects = [];
+
+                _.each(array, function (value) {
+                    types = _.concat(types, value.type);
+                    nearest = _.concat(nearest, value.nearest);
+                    objects = _.concat(objects, value.objects);
+                });
+
+                vm.types = compact(vm.types);
+                vm.nearest = compact(vm.nearest);
+                vm.objects = compact(vm.objects);
+                _.each(_.uniq(types), function (value) {
+                    vm.types[value] = !!vm.types[value];
+                });
+
+                _.each(_.uniq(nearest), function (value) {
+                    vm.nearest[value] = !!vm.nearest[value];
+                });
+
+                _.each(_.uniq(objects), function (value) {
+                    vm.objects[value] = !!vm.objects[value];
+                });
+
+                vm.types = sort(vm.types);
+                vm.nearest = sort(vm.nearest);
+                vm.objects = sort(vm.objects);
+
+                return array;
+            }
+
+            function compact(object) {
+                var result = {};
+                _.each(object, function (v, k) {
+                    if (v) {
+                        result[k] = v;
+                    }
+                });
+
+                return result;
+            }
+
+            function sort(object) {
+                var result = {}, fields = [];
+
+                _.each(object, function (v, k) {
+                    fields.push(k);
+                });
+
+                fields = _.sortBy(fields);
+                _.each(fields, function (v) {
+                    result[v] = object[v];
+                });
+
+                return result;
             }
 
             function getMinYear() {
@@ -121,7 +179,6 @@
                     vm.year = [vm.minYear, vm.MAX_YEAR];
                 });
             }
-
 
             function formatCoords(coords) {
                 return _.map(angular.fromJson(coords), function (value) {
