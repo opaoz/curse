@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Map</title>
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/animate.css/3.2.0/animate.min.css">
     <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css">
-    <link rel="stylesheet" href="style/style.css"/>
+    <link rel="stylesheet" href="style/main.css"/>
     <style>
         html, body {
             height: 100%;
@@ -20,20 +21,27 @@
 <body ng-controller="MainController as vm" ng-init="vm._init_()">
 <div class="container">
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-4">
             <div class="input-group">
-                <span class="input-group-addon" id="basic-addon1">&#128269;</span>
+                <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-search"></i></span>
                 <input type="text" class="form-control" ng-model="vm.searchString" placeholder="Саратов">
+            </div>
+        </div>
+        <div class="col-xs-8" style="line-height: 43px;">
+            <div class="row">
+                <div class="col-xs-1 year-label">{{vm.minYear}}</div>
+                <div class="col-xs-10">
+                    <slider ng-model="vm.year" step="1" range="true" slider-tooltip-position="bottom" min="vm.minYear"
+                            max="vm.MAX_YEAR" value="Year"
+                            tooltip="show"></slider>
+                </div>
+                <div class="col-xs-1 year-label">{{vm.MAX_YEAR}}</div>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
             <map center="{{vm.map.center | LonLat}}" zoom="{{vm.map.zoom}}" class="map">
-                <!--<shape name="polygon" paths="{{vm.paths}}" stroke-color="#FF0000" stroke-opacity="0.8" stroke-weight="2" fill-color="#FF0000" fill-opacity="0.35">
-                </shape>-->
-                <!--<marker ng-repeat="mark in vm.markers" position="[{{mark.lat}}, {{mark.long}}]"
-                        title="{{mark.name}}"></marker>-->
                 <custom-marker ng-repeat="mark in vm.markers track by $index"
                                id="custom-marker-{{$index}}"
                                on-click="vm.clickOnMarker($index)"
@@ -43,95 +51,105 @@
                     </div>
                 </custom-marker>
             </map>
+            <a class="btn-export" ng-click="vm.downloadCSV()"><i class="glyphicon glyphicon-save"
+                                                                 title="Скачать отчёт"></i></a>
+            <a animated-modal options="vm.options" after-close="vm.afterClose()" before-open="vm.beforeOpen()"
+               href="#play" class="btn-play"><i
+                    class="glyphicon glyphicon-play"
+                    title="Начать демонстрацию"></i></a>
         </div>
     </div>
-    <div class="row" ng-show="vm.selected.max">
-        <div class="col-xs-12">
-            <div class="jumbotron">
+    <pageslide ps-open="vm.pageslide"
+               ps-click-outside="false"
+               ps-key-listener="true">
+        <div class="row more-info">
+            <div class="col-xs-12">
                 <h1>{{vm.selected.max.name}}</h1>
                 <p>{{vm.selected.max.desc}}</p>
-                <p ng-if="vm.selected.max.type">Тип: {{vm.selected.max.type.join(', ')}}</p>
-                <p ng-if="vm.selected.max.nearest">Близлежащие объекты: {{vm.selected.max.nearest.join(', ')}}</p>
-                <p>Годы существования: {{vm.selected.max.minYear + ' - ' + vm.selected.max.maxYear}}</p>
-                <p>Координаты: {{vm.selected.max.pos.join(', ')}}</p>
-                <p ng-if="vm.selected.array.length>1">Сопутствующие названия:
+                <p ng-if="vm.selected.max.type"><b>Тип:</b> {{vm.selected.max.type.join(', ')}}</p>
+                <p ng-if="vm.selected.max.nearest"><b>Близлежащие объекты:</b> {{vm.selected.max.nearest.join(', ')}}
+                </p>
+                <p><b>Годы существования:</b> {{vm.selected.max.minYear + ' - ' + vm.selected.max.maxYear}}</p>
+                <p><b>Координаты:</b> {{vm.selected.max.pos.join(', ')}}</p>
+                <p ng-if="vm.selected.array.length>1"><b>Сопутствующие названия:</b>
                     <a ng-repeat="ps in vm.selected.array track by $index"
                        style="cursor: pointer;"
                        ng-click="vm.selected.max=ps" ng-if="ps.name!==vm.selected.max.name">{{ps.name}}</a>
                 </p>
             </div>
         </div>
-    </div>
+        <a ng-click="vm.pageslide=false" class="close-btn"><i class="glyphicon glyphicon-remove"></i></a>
+    </pageslide>
     <div class="row">
         <div class="col-xs-12">
-            <div class="year-slider lig" ng-init="isYearCollapsed=true">
-                <div class="text-center h4 cp" style="display:block;" ng-click="isYearCollapsed = !isYearCollapsed">
-                    Выбор года
-                </div>
-                <div uib-collapse="isYearCollapsed">
-                    <slider ng-model="vm.year" step="1" range="true" min="vm.minYear" max="vm.MAX_YEAR" value="Year"
-                            tooltip="show"></slider>
-                    <div class="labels clearfix"><span class="pull-left">{{vm.minYear}}</span><span class="pull-right">{{vm.MAX_YEAR}}</span>
+            <div style="background: #eee;padding:5px 0;" class="clearfix">
+                <div class="col-xs-4">
+                    <div class="text-center h4 cp check-block" style="display:block;">
+                        Тип
+                    </div>
+                    <div ng-repeat="(k,v) in vm.types track by $index" class="animate">
+                        <label>
+                            <checkbox ng-model="vm.types[k]"></checkbox>
+                            {{k}}
+                        </label>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="types-slider" ng-init="isTypeCollapsed=true">
-                <div class="text-center h4 cp" style="display:block;" ng-click="isTypeCollapsed = !isTypeCollapsed">
-                    Выбор типа
-                </div>
-                <div uib-collapse="isTypeCollapsed" class="row">
-                    <div class="col-xs-3" ng-repeat="(k,v) in vm.types track by $index">
+                <div class="col-xs-4">
+                    <div class="text-center h4 cp check-block2" style="display:block;">
+                        Объекты культуры
+                    </div>
+                    <div ng-repeat="(k,v) in vm.objects track by $index" class="animate">
                         <label>
-                            <input type="checkbox" ng-model="vm.types[k]"> {{k}}
+                            <checkbox ng-model="vm.objects[k]"></checkbox>
+                            {{k}}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="text-center h4 cp check-block" style="display:block;">
+                        Близлежащие природные объекты
+                    </div>
+                    <div ng-repeat="(k,v) in vm.nearest track by $index" class="animate">
+                        <label>
+                            <checkbox ng-model="vm.nearest[k]"></checkbox>
+                            {{k}}
                         </label>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="culture-slider lig" ng-init="isCultureCollapsed=true">
-                <div class="text-center h4 cp" style="display:block;"
-                     ng-click="isCultureCollapsed = !isCultureCollapsed">Выбор объектов культуры
-                </div>
-                <div uib-collapse="isCultureCollapsed" class="row">
-                    <div class="col-xs-3" ng-repeat="(k,v) in vm.objects track by $index">
-                        <label>
-                            <input type="checkbox" ng-model="vm.objects[k]"> {{k}}
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="culture-slider " ng-init="isNearestCollapsed=true">
-                <div class="text-center h4 cp" style="display:block;"
-                     ng-click="isNearestCollapsed = !isNearestCollapsed">Выбор близлежащих природных объектов
-                </div>
-                <div uib-collapse="isNearestCollapsed" class="row">
-                    <div class="col-xs-3" ng-repeat="(k,v) in vm.nearest track by $index">
-                        <label>
-                            <input type="checkbox" ng-model="vm.nearest[k]"> {{k}}
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <button class="btn btn-block" ng-click="vm.downloadCSV()">Скачать отчёт</button>
         </div>
     </div>
 </div>
+
+<div id="play">
+    <div class="close-play">
+        <i class="glyphicon glyphicon-remove-circle"></i>
+    </div>
+    <div class="modal-content">
+        <map center="{{vm.map.center | LonLat}}" zoom="{{vm.map.zoom}}" class="map">
+            <custom-marker ng-repeat="mark in vm.demo track by $index"
+                           id="custom-marker-preview-{{$index}}"
+                           ng-if="mark.show"
+                           position="{{mark.pos}}">
+                <div>
+                    <span class="circle"></span> {{mark.name}}
+                </div>
+            </custom-marker>
+        </map>
+        <div class="current-year">
+            <h2>
+                <counter value="vm.currentYear"
+                         to="vm.manualStart"
+                         duration="(vm.MAX_YEAR-vm.minYear)*200"
+                         step="vm.step()"> {{vm.currentYear | myNumber}}
+                </counter>
+            </h2>
+        </div>
+    </div>
+</div>
+
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="bower_components/lodash/lodash.js"></script>
 <script src="bower_components/angular/angular.js"></script>
@@ -140,6 +158,12 @@
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.js"></script>
 <script src="bower_components/angular-bootstrap-slider/slider.js"></script>
+<script src="bower_components/angular-bootstrap-checkbox/angular-bootstrap-checkbox.js"></script>
+<script src="bower_components/angular-pageslide-directive/dist/angular-pageslide-directive.js"></script>
+<script src="bower_components/angular-animate/angular-animate.min.js"></script>
+<script src="js/libs/animatedModal.min.js"></script>
+<script src="js/libs/angular-animated-modal.js"></script>
+<script src="js/libs/angular-counter/js/angular-counter.js"></script>
 
 <script src="js/app.js"></script>
 <!--Controllers-->
@@ -155,5 +179,6 @@
 <script src="js/filters/code-formatter.js"></script>
 <script src="js/filters/trust-source.js"></script>
 <script src="js/filters/lon-lat-formatter.js"></script>
+<script src="js/filters/number.js"></script>
 </body>
 </html>

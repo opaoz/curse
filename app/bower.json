@@ -22,9 +22,13 @@
     "angular-google-maps": "~2.2.1",
     "ngmap": "~1.13.15",
     "angular-ui-bootstrap": "~1.2.1",
-    "angular-bootstrap-slider": "~0.1.26"
+    "angular-bootstrap-slider": "~0.1.26",
+    "angular-pageslide-directive": "^2.1.1",
+    "angular-bootstrap-checkbox": "^0.5.0",
+    "angular-animate": "^1.5.8"
   },
-  "devDependencies": {
-    "angular": "~1.4.7"
+  "resolutions": {
+    "angular": "~1.4.7",
+    "jquery": "1.9.1 - 2"
   }
 }

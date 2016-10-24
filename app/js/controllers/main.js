@@ -17,6 +17,13 @@
             vm.nearest = {/*'Река': false, 'Гора': false, 'Пруд': false, 'ПГТ': false*/};
             vm.MAX_YEAR = new Date().getFullYear();
             vm.searchString = '';
+            vm.manualStart = 0;
+            vm.options = {
+                animatedIn: 'zoomIn',
+                animatedOut: 'zoomOut',
+                animationDuration: '.6s',
+                overflow: 'hidden'
+            };
 
             vm.selected = false;
 
@@ -40,12 +47,34 @@
             };
 
             vm.clickOnMarker = function (event, index) {
-                //console.log(arguments);
                 vm.selected = vm.markers[index];
+                vm.pageslide = true;
             };
 
             vm.downloadCSV = function () {
                 csv.JSONToCSVConvertor(vm.markers, 'Report', true);
+            };
+
+            vm.afterClose = function () {
+                vm.currentYear = vm.minYear;
+                vm.manualStart = vm.minYear;
+                vm.demo = [];
+            };
+
+            vm.beforeOpen = function () {
+                console.log('beforeOpen');
+                vm.manualStart = vm.MAX_YEAR;
+                vm.demo = angular.copy(vm.originalMarkers);
+
+                $scope.$apply();
+            };
+
+            vm.step = function () {
+                _.each(vm.demo, function (value) {
+                    value.show = (value.minYear <= vm.currentYear && value.maxYear >= vm.currentYear);
+                });
+
+                $scope.$applyAsync();
             };
 
             function filt() {
@@ -176,6 +205,8 @@
             function getMinYear() {
                 httpRequest.send(requests.getMinYear).then(function (response) {
                     vm.minYear = response.data[0].minYear;
+                    vm.currentYear = vm.minYear;
+                    vm.manualStart = vm.minYear;
                     vm.year = [vm.minYear, vm.MAX_YEAR];
                 });
             }
@@ -185,6 +216,5 @@
                     return [value.latitude, value.longitude];
                 });
             }
-
         }]);
 })();
