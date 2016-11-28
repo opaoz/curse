@@ -33,6 +33,8 @@
             $scope.$watch('vm.nearest', _.debounce(filt, 500), true);
             $scope.$watch('vm.objects', _.debounce(filt, 500), true);
 
+            $scope.$watch('vm.exactYear', _.debounce(exact, 500));
+
             vm._init_ = function () {
                 vm.map = {
                     center: {
@@ -51,6 +53,10 @@
                 vm.pageslide = true;
             };
 
+            vm.word = function (name) {
+                $('#word-export').wordExport(name);
+            };
+
             vm.downloadCSV = function () {
                 csv.JSONToCSVConvertor(vm.markers, 'Report', true);
             };
@@ -58,11 +64,13 @@
             vm.afterClose = function () {
                 vm.currentYear = vm.minYear;
                 vm.manualStart = vm.minYear;
+                vm.demonstration = false;
                 vm.demo = [];
             };
 
             vm.beforeOpen = function () {
                 console.log('beforeOpen');
+                vm.demonstration = true;
                 vm.manualStart = vm.MAX_YEAR;
                 vm.demo = angular.copy(vm.originalMarkers);
 
@@ -77,11 +85,22 @@
                 $scope.$applyAsync();
             };
 
+            function exact() {
+                var year = parseInt(vm.exactYear, 10);
+
+                if (year >= vm.minYear && year <= vm.MAX_YEAR) {
+                    vm.year = [year, year];
+                    !$scope.$$phase && $scope.$apply();
+                }
+            }
+
             function filt() {
-                vm.markers = [];
-                !$scope.$$phase && $scope.$apply();
+                var old = vm.markers;
+
+                var markers = [];
+
                 $timeout(function () {
-                    vm.markers = angular.copy(_.filter(vm.originalMarkers, function (value) {
+                    markers = angular.copy(_.filter(vm.originalMarkers, function (value) {
                         var searchStr = true;
                         if (vm.searchString) {
                             searchStr = value.name.toLowerCase().replace('ё', 'е').indexOf(vm.searchString.toLowerCase().replace('ё', 'е')) !== -1
@@ -93,11 +112,17 @@
                             checkProp(vm.objects, value.objects) && searchStr;
                     }));
 
-                    fillFilters(vm.markers);
+                    fillFilters(markers);
 
-                    vm.markers = _.map(_.groupBy(vm.markers, 'group'), function (value) {
+                    markers = _.map(_.groupBy(markers, 'group'), function (value) {
                         return {array: value, max: _.maxBy(value, 'maxYear')};
                     });
+
+                    if (!_.isEqual(old, markers) || _.isEmpty(old)) {
+                        vm.markers = [];
+                        !$scope.$$phase && $scope.$apply();
+                        vm.markers = markers;
+                    }
 
                     $scope.$apply();
                 });

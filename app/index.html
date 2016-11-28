@@ -19,7 +19,12 @@
     </style>
 </head>
 <body ng-controller="MainController as vm" ng-init="vm._init_()">
-<div class="container">
+<div class="container-fluid" style="padding-bottom:50px;">
+    <a ng-if="!vm.demonstration" class="menu-button" ng-click="vm.menu=true" ng-class="{'m':vm.menu}"><i
+            class="glyphicon glyphicon-menu-hamburger"></i></a>
+    <div class="page-header" id="map">
+        <h1>Историческая интерактивная карта поселений Саратовской области</h1>
+    </div>
     <div class="row">
         <div class="col-xs-4">
             <div class="input-group">
@@ -27,7 +32,7 @@
                 <input type="text" class="form-control" ng-model="vm.searchString" placeholder="Саратов">
             </div>
         </div>
-        <div class="col-xs-8" style="line-height: 43px;">
+        <div class="col-xs-4 col-sm-6" style="line-height: 43px;">
             <div class="row">
                 <div class="col-xs-1 year-label">{{vm.minYear}}</div>
                 <div class="col-xs-10">
@@ -36,6 +41,16 @@
                             tooltip="show"></slider>
                 </div>
                 <div class="col-xs-1 year-label">{{vm.MAX_YEAR}}</div>
+            </div>
+        </div>
+        <div class="col-xs-4 col-sm-2">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="input-group">
+                        <span class="input-group-addon">Год: </span>
+                        <input type="text" class="form-control" ng-model="vm.exactYear" placeholder="1996">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -51,19 +66,15 @@
                     </div>
                 </custom-marker>
             </map>
-            <a class="btn-export" ng-click="vm.downloadCSV()"><i class="glyphicon glyphicon-save"
-                                                                 title="Скачать отчёт"></i></a>
-            <a animated-modal options="vm.options" after-close="vm.afterClose()" before-open="vm.beforeOpen()"
-               href="#play" class="btn-play"><i
-                    class="glyphicon glyphicon-play"
-                    title="Начать демонстрацию"></i></a>
         </div>
     </div>
     <pageslide ps-open="vm.pageslide"
+               ps-side="left"
+               ps-size="400px"
                ps-click-outside="false"
                ps-key-listener="true">
         <div class="row more-info">
-            <div class="col-xs-12">
+            <div class="col-xs-12" id="word-export">
                 <h1>{{vm.selected.max.name}}</h1>
                 <p>{{vm.selected.max.desc}}</p>
                 <p ng-if="vm.selected.max.type"><b>Тип:</b> {{vm.selected.max.type.join(', ')}}</p>
@@ -77,9 +88,45 @@
                        ng-click="vm.selected.max=ps" ng-if="ps.name!==vm.selected.max.name">{{ps.name}}</a>
                 </p>
             </div>
+            <div class="text-center" style="background: white;">
+                <a ng-click="vm.word(vm.selected.max.name)" class="btn btn-default"><i
+                        class="glyphicon glyphicon-save"></i>
+                    Экспорт в Word</a>
+            </div>
         </div>
         <a ng-click="vm.pageslide=false" class="close-btn"><i class="glyphicon glyphicon-remove"></i></a>
     </pageslide>
+    <pageslide ps-open="vm.menu"
+               ps-key-listener="true">
+        <div class="row ps-menu">
+            <div class="col-xs-12">
+                <h3 style="color:white;">Меню</h3>
+                <hr style="color:white;">
+
+                <a href="#map"><i class="glyphicon glyphicon-map-marker"></i> Карта</a>
+                <a href="#howto"><i class="glyphicon glyphicon-question-sign"></i> Как пользоваться?</a>
+                <a href="#about"><i class="glyphicon glyphicon-info-sign"></i> О сайте</a>
+            </div>
+        </div>
+        <div class="ps-footer">
+            &copy; 2016 год<br>
+            СГТУ, Левин В.Е, Шульга Т.Э.
+        </div>
+        <a ng-click="vm.menu=false" class="close-btn"><i class="glyphicon glyphicon-remove"></i></a>
+    </pageslide>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a animated-modal options="vm.options" after-close="vm.afterClose()" before-open="vm.beforeOpen()"
+               href="#play" class="btn btn-default btn-custom"><i class="glyphicon glyphicon-play"></i> Начать
+                демонстрацию
+            </a>
+            <a ng-click="vm.downloadCSV()" class="btn btn-default btn-custom"><i
+                    class="glyphicon glyphicon-save"></i>
+                Экспорт видимых
+            </a>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <div style="background: #eee;padding:5px 0;" class="clearfix">
@@ -119,6 +166,41 @@
             </div>
         </div>
     </div>
+    <div class="page-header" id="howto">
+        <h2>Как пользоваться?</h2>
+    </div>
+
+
+    <div class="page-header" id="about">
+        <h2>О сайте</h2>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <strong>О проекте</strong>
+            <p>На территории Саратовской области на протяжении всей ее истории существовало множество национальных
+                поселений. Некоторые из них уже исчезли, другие переименованы, третьи перенесены на другое место.
+                Информация об этих поселениях представляют огромную ценность для историков и этнографов, но найти ее
+                можно только в архивах или в немногочисленных разрозненных публикациях разных лет</p>
+            <p>Главной <strong>целью</strong> проекта <strong>«Историческая интерактивная карта поселений Саратовской
+                области»</strong> является создание инструмента для простой и наглядной работы с
+                архивными данными, а
+                также создание отчётов, на основе результатов работы</p>
+            <hr>
+            <strong>О технологиях</strong>
+            <p>При разработке данного сайта использовались современные технологии <strong>FrontEnd</strong> разработки.
+                Такие как <strong>AngularJs, Bootstrap, jQuery</strong>.</p>
+            <p>В основе серверной состовляющей лежит фреймворк <strong>Jena</strong>, позволяющий использовать в данном
+                проекте
+                <strong>онтологический подход</strong> к хранению данных, что существенно расширяет возможности
+                взаимодействия с
+                данными</p>
+            <hr>
+            <strong>Об авторах</strong>
+            <p>Проект <strong>«Историческая интерактивная карта поселений Саратовской области»</strong> разрабатывается
+                студентом кафедры <strong>«Прикладная информатика и программная инженерия»</strong> в качестве
+                дипломного проекта«, совместно с кафедрой <strong>«История Отечества и культуры»</strong></p>
+        </div>
+    </div>
 </div>
 
 <div id="play">
@@ -156,12 +238,14 @@
 <script src="//maps.google.com/maps/api/js"></script>
 <script src="bower_components/ngmap/build/scripts/ng-map.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/file-saver/FileSaver.min.js"></script>
 <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.js"></script>
 <script src="bower_components/angular-bootstrap-slider/slider.js"></script>
 <script src="bower_components/angular-bootstrap-checkbox/angular-bootstrap-checkbox.js"></script>
 <script src="bower_components/angular-pageslide-directive/dist/angular-pageslide-directive.js"></script>
 <script src="bower_components/angular-animate/angular-animate.min.js"></script>
 <script src="js/libs/animatedModal.min.js"></script>
+<script src="bower_components/tableexport.js/dist/js/tableexport.js"></script>
 <script src="js/libs/angular-animated-modal.js"></script>
 <script src="js/libs/angular-counter/js/angular-counter.js"></script>
 
@@ -173,6 +257,7 @@
 <script src="js/services/http-request.js"></script>
 <script src="js/services/lodash.js"></script>
 <script src="js/services/simple-tmpl.js"></script>
+<script src="js/services/word.js"></script>
 <script src="js/services/excel.js"></script>
 
 <!--Filters-->

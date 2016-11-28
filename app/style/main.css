@@ -1,6 +1,38 @@
 body {
   background: #fafafa url("http://flymer.ru/img/bg/papr.jpg"); }
 
+p {
+  text-indent: 1.5em;
+  size: 14px; }
+
+.menu-button {
+  width: 40px;
+  height: 40px;
+  position: fixed;
+  right: 0;
+  top: 10px;
+  z-index: 9998;
+  font-size: 30px;
+  text-align: center;
+  background: indianred;
+  color: #fafafa;
+  opacity: 0.5;
+  padding-top: 3px;
+  cursor: pointer;
+  transition: right 0.5s; }
+  .menu-button:hover {
+    color: white;
+    opacity: 1; }
+  .menu-button.m {
+    right: 300px;
+    opacity: 1; }
+
+.ps-menu a {
+  display: block;
+  color: white;
+  font-size: 18px;
+  text-align: center; }
+
 .lig {
   background: lightgray; }
 
@@ -11,7 +43,7 @@ body {
   padding: 5px; }
 
 .map {
-  height: 470px; }
+  height: 600px; }
 
 .cp {
   cursor: pointer; }
@@ -64,13 +96,24 @@ custom-marker {
   margin: 0;
   padding: 10px 0; }
 
+.ps-footer {
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+  left: 0;
+  text-align: center;
+  color: white; }
+
 .ng-pageslide {
   background: cornflowerblue;
   padding: 0 10px;
-  border-left: 4px solid indianred; }
+  border-left: 4px solid indianred;
+  border-right: 4px solid indianred; }
 
 .more-info {
-  margin-left: -10px; }
+  margin-left: -10px;
+  margin-right: -10px;
+  background: white; }
   .more-info > :first-child {
     background: white;
     padding-bottom: 20px; }
