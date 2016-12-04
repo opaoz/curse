@@ -105,6 +105,12 @@
 
                 <a href="#map"><i class="glyphicon glyphicon-map-marker"></i> Карта</a>
                 <a href="#howto"><i class="glyphicon glyphicon-question-sign"></i> Как пользоваться?</a>
+                <ul>
+                    <li><a href="#timelineHow">Timeline</a></li>
+                    <li><a href="#exactHow">Конкретный год</a></li>
+                    <li><a href="#searchHow">Строка поиска</a></li>
+                    <li><a href="#mapHow">Карта и просмотр информации о поселении</a></li>
+                </ul>
                 <a href="#about"><i class="glyphicon glyphicon-info-sign"></i> О сайте</a>
             </div>
         </div>
@@ -178,13 +184,12 @@
                 <li><strong>Timeline (временная линия)</strong></li>
                 <li><strong>Поле ввода конкретного года</strong></li>
             </ul>
+            <hr>
 
+            <strong id="timelineHow">Timeline</strong>
             <p>На <i>рисунке 1</i> представлена детальная схема временной линии.</p>
-
-            <strong>Timeline</strong>
             <div class="text-center">
-                <img src="https://github.com/opaoz/curse/blob/master/app/images/1.png?raw=true" alt="Timeline scheme"
-                     class="img-responsive">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/1.png?raw=true" alt="Timeline scheme">
                 <p><strong>Рисунок 1 - </strong><i>Детальная схема временной линии</i></p>
             </div>
 
@@ -202,20 +207,19 @@
                 не влияющие на выборку данных, <strong class="unmarked">красным</strong>.</p>
 
             <div class="text-center">
-                <img src="https://github.com/opaoz/curse/blob/master/app/images/2.png?raw=true" alt="Timeline"
-                     class="img-responsive">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/2.png?raw=true" alt="Timeline">
                 <p><strong>Рисунок 2 - </strong><i>Изменённое состояние временной линии</i></p>
             </div>
+            <hr>
 
-            <strong>Поле ввода конкретного года</strong>
+            <strong id="exactHow">Поле ввода конкретного года</strong>
             <p>Если при осуществелении выборки не нужен интервал, а нужен конкретный год, либо общий интервал слишком
                 велик и не удобен для осуществления выборки с использованием ползунков, можно использовать поле, для
                 ввода значения требуемого года. Поле ввода обозначено на <i>рисунке 3</i> цифрой <strong
                         class="green">I</strong></p>
 
             <div class="text-center">
-                <img src="https://github.com/opaoz/curse/blob/master/app/images/3.png?raw=true" alt="Input year"
-                     class="img-responsive">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/3.png?raw=true" alt="Input year">
                 <p><strong>Рисунок 3 - </strong><i>Поле для ввода конкретного года</i></p>
             </div>
 
@@ -223,16 +227,60 @@
                 представленная на карте, также изменится в соответствии с новой временной границей (рисунок 4)</p>
 
             <div class="text-center">
-                <img src="https://github.com/opaoz/curse/blob/master/app/images/4.png?raw=true" alt="Input year changed"
-                     class="img-responsive">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/4.png?raw=true"
+                     alt="Input year changed">
                 <p><strong>Рисунок 4 - </strong><i>Изменение временного промежутка после ввода года</i></p>
             </div>
 
             <p class="mark">*Корректным считает целочисленное значение, в формате года (4 цифры), подпадающее под общие
                 временные границы (т.е. являющееся больше или равно минимального и меньше или равно максимального)</p>
+            <hr>
+
+            <br>
+            <strong id="searchHow">Строка поиска</strong>
+            <p>Для поиска поселений по названию применяется поле поиска, которое находиться в шапке сайта и обозначено
+                цифрой <strong class="orange">I</strong> на <i>рисунке 5</i>.</p>
+
+            <div class="text-center">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/5.png?raw=true"
+                     alt="Search">
+                <p><strong>Рисунок 5 - </strong><i>Поле поиска</i></p>
+            </div>
+
+            <p>При вводе строки в поле поиска, к выборке применяется фильтр по наличию данной подстроки в названии
+                поселения и все поселения, удовлетворяющие поиску, входят в выборку, показанную на карте.</p>
+            <p><strong>Например,</strong>, при вводе в поле поиска строки <strong>"Са"</strong> на карте буду показаны
+                поселения <i>"Саратов", "Самойловка", "Салтыковка" и другие</i></p>
+
+            <hr>
+            <br>
+            <strong id="mapHow">Карта и просмотр информации о поселении</strong>
+            <p>Основным инструментом визуализации выборки является карта с обозначением отфильтрованых поселений. На <i>рисунке
+                6</i> представлена сама карта, а на ней цифрами <strong class="darkpurple">I, II</strong> и <strong
+                    class="darkpurple">III</strong> обозначены поселения.</p>
+
+            <div class="text-center">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/6.png?raw=true"
+                     alt="Map">
+                <p><strong>Рисунок 6 - </strong><i>Карта</i></p>
+            </div>
+
+            <p>Сама карта является встроенным экземпляром Google Maps, с применением API-методов для создания кастомных
+                маркеров, которые и обозначают поселения в выборке.</p>
+            <p>При нажатии на любой из маркеров открывается подробная информация о данном поселении (<strong
+                    class="yellow">I</strong> на <i>рисунке 7</i>).
+            </p>
+
+            <div class="text-center">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/7.png?raw=true"
+                     alt="Description">
+                <p><strong>Рисунок 7 - </strong><i>Подробная информация о поселении</i></p>
+            </div>
+
+            <p>По нажатию на кнопку <strong class="cyan">II</strong> в панеле полной информации о поселении <strong
+                    class="yellow">I</strong> Вы можете скачать эту же информацию в формате Microsoft Word</p>
         </div>
     </div>
-
     <div class="page-header" id="about">
         <h2>О сайте</h2>
     </div>

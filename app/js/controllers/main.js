@@ -32,7 +32,6 @@
             $scope.$watch('vm.types', _.debounce(filt, 500), true);
             $scope.$watch('vm.nearest', _.debounce(filt, 500), true);
             $scope.$watch('vm.objects', _.debounce(filt, 500), true);
-
             $scope.$watch('vm.exactYear', _.debounce(exact, 500));
 
             vm._init_ = function () {

@@ -12,23 +12,51 @@ $secondColor: indianred;
     font-family: "Times New Roman", sans-serif;
   }
 
+  .orange {
+    color: #FF6A00;
+    font-family: "Times New Roman", sans-serif;
+  }
+
   .purple {
     color: #FF00DC;
     font-family: "Times New Roman", sans-serif;
   }
 
+  .darkpurple {
+    color: #FF006E;
+    font-family: "Times New Roman", sans-serif;
+  }
+
   .marked {
     background-color: $mainColor;
+    color: white;
     padding: 3px;
   }
 
   .unmarked {
+    color: white;
     background-color: $secondColor;
     padding: 3px;
   }
 
   .green {
     color: #00FF21;
+    font-family: "Times New Roman", sans-serif;
+  }
+
+  .yellow {
+    color: #FFD800;
+    font-family: "Times New Roman", sans-serif;
+  }
+
+  .cyan {
+    color: #00FFFF;
+    font-family: "Times New Roman", sans-serif;
+  }
+
+  .mark {
+    font-size: 12px;
+    font-style: italic;
   }
 }
 

@@ -4,17 +4,35 @@
 .howto .red {
   color: #FF0000;
   font-family: "Times New Roman", sans-serif; }
+.howto .orange {
+  color: #FF6A00;
+  font-family: "Times New Roman", sans-serif; }
 .howto .purple {
   color: #FF00DC;
   font-family: "Times New Roman", sans-serif; }
+.howto .darkpurple {
+  color: #FF006E;
+  font-family: "Times New Roman", sans-serif; }
 .howto .marked {
   background-color: cornflowerblue;
+  color: white;
   padding: 3px; }
 .howto .unmarked {
+  color: white;
   background-color: indianred;
   padding: 3px; }
 .howto .green {
-  color: #00FF21; }
+  color: #00FF21;
+  font-family: "Times New Roman", sans-serif; }
+.howto .yellow {
+  color: #FFD800;
+  font-family: "Times New Roman", sans-serif; }
+.howto .cyan {
+  color: #00FFFF;
+  font-family: "Times New Roman", sans-serif; }
+.howto .mark {
+  font-size: 12px;
+  font-style: italic; }
 
 body {
   background: #fafafa url("http://flymer.ru/img/bg/papr.jpg"); }
