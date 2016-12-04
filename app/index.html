@@ -169,7 +169,7 @@
     <div class="page-header" id="howto">
         <h2>Как пользоваться?</h2>
     </div>
-    <div class="row">
+    <div class="row howto">
         <div class="col-xs-12">
             <strong>Временные границы</strong>
             <p>Основным критерием выборки при работе с данным инструментом является выбор временных границ.
@@ -178,11 +178,58 @@
                 <li><strong>Timeline (временная линия)</strong></li>
                 <li><strong>Поле ввода конкретного года</strong></li>
             </ul>
-            <br>
-            <p>На рисунке 1 представлена детальная схема временной линии.</p>
+
+            <p>На <i>рисунке 1</i> представлена детальная схема временной линии.</p>
+
+            <strong>Timeline</strong>
             <div class="text-center">
-                <img src="images/1.png" alt="Timeline" class="img-responsive">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/1.png?raw=true" alt="Timeline scheme"
+                     class="img-responsive">
+                <p><strong>Рисунок 1 - </strong><i>Детальная схема временной линии</i></p>
             </div>
+
+            <p>Цифрами <strong class="blue">II</strong> и <strong class="blue">III</strong> на схеме обозначены общие
+                временные границы - от минимального года, представленного в базе, до текущего календарного года.
+                Наприменр, в выборке, представленной на схеме самым первым поселением является город Саратов (основан в
+                1590 году), поэтому строка <strong class="blue">II</strong> имеет значение <strong>1590</strong>.
+            </p>
+
+            <p>Цифрой <strong class="red">I</strong> обозначена сама временная линия. Она представляет собой
+                двусторонний слайдер, позволяющий задавать временные границы, пользуясь "ползунками" <strong
+                        class="purple">IV</strong> и <strong class="purple">V</strong>
+                При перемещении "ползунков" <i>(например, рисунок 2)</i> выделенный интервал, применяемый к карте,
+                выделен <strong class="marked">синим цветом</strong>, а промежутки, оставшиеся за пределами интервала и
+                не влияющие на выборку данных, <strong class="unmarked">красным</strong>.</p>
+
+            <div class="text-center">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/2.png?raw=true" alt="Timeline"
+                     class="img-responsive">
+                <p><strong>Рисунок 2 - </strong><i>Изменённое состояние временной линии</i></p>
+            </div>
+
+            <strong>Поле ввода конкретного года</strong>
+            <p>Если при осуществелении выборки не нужен интервал, а нужен конкретный год, либо общий интервал слишком
+                велик и не удобен для осуществления выборки с использованием ползунков, можно использовать поле, для
+                ввода значения требуемого года. Поле ввода обозначено на <i>рисунке 3</i> цифрой <strong
+                        class="green">I</strong></p>
+
+            <div class="text-center">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/3.png?raw=true" alt="Input year"
+                     class="img-responsive">
+                <p><strong>Рисунок 3 - </strong><i>Поле для ввода конкретного года</i></p>
+            </div>
+
+            <p>Сразу же после ввода корректного* значения года, интервал сузится до этого значения и выборка,
+                представленная на карте, также изменится в соответствии с новой временной границей (рисунок 4)</p>
+
+            <div class="text-center">
+                <img src="https://github.com/opaoz/curse/blob/master/app/images/4.png?raw=true" alt="Input year changed"
+                     class="img-responsive">
+                <p><strong>Рисунок 4 - </strong><i>Изменение временного промежутка после ввода года</i></p>
+            </div>
+
+            <p class="mark">*Корректным считает целочисленное значение, в формате года (4 цифры), подпадающее под общие
+                временные границы (т.е. являющееся больше или равно минимального и меньше или равно максимального)</p>
         </div>
     </div>
 

@@ -1,3 +1,21 @@
+.howto .blue {
+  color: #0026FF;
+  font-family: "Times New Roman", sans-serif; }
+.howto .red {
+  color: #FF0000;
+  font-family: "Times New Roman", sans-serif; }
+.howto .purple {
+  color: #FF00DC;
+  font-family: "Times New Roman", sans-serif; }
+.howto .marked {
+  background-color: cornflowerblue;
+  padding: 3px; }
+.howto .unmarked {
+  background-color: indianred;
+  padding: 3px; }
+.howto .green {
+  color: #00FF21; }
+
 body {
   background: #fafafa url("http://flymer.ru/img/bg/papr.jpg"); }
 
