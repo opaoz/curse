@@ -110,6 +110,7 @@
                     <li><a href="#exactHow">Конкретный год</a></li>
                     <li><a href="#searchHow">Строка поиска</a></li>
                     <li><a href="#mapHow">Карта и просмотр информации о поселении</a></li>
+                    <li><a href="#filtHow"></a></li>
                 </ul>
                 <a href="#about"><i class="glyphicon glyphicon-info-sign"></i> О сайте</a>
             </div>
@@ -272,13 +273,45 @@
             </p>
 
             <div class="text-center">
-                <img src="https://github.com/opaoz/curse/blob/master/app/images/7.png?raw=true"
+                <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/7.png?raw=true"
                      alt="Description">
                 <p><strong>Рисунок 7 - </strong><i>Подробная информация о поселении</i></p>
             </div>
 
-            <p>По нажатию на кнопку <strong class="cyan">II</strong> в панеле полной информации о поселении <strong
-                    class="yellow">I</strong> Вы можете скачать эту же информацию в формате Microsoft Word</p>
+            <p>По нажатию на кнопку "Экспорт в Word" (<strong class="cyan">II</strong>) в панеле полной информации о
+                выбранном поселении(<strong class="yellow">I</strong>) Вы можете скачать эту же информацию в формате
+                Microsoft Word.
+            </p>
+
+            <hr>
+            <br>
+
+            <strong id="filtHow">Фильтры</strong>
+            <p>Помимо выборки по году необходимо иметь возможность фильтровать поселения по свойствам. В данной версии
+                проекта представленны три свойства, по которым возможно осуществить фильтрацию - <strong>Тип, Объекты
+                    культуры</strong> и <strong>Близлежащие объекты</strong> (<i>рисунок 8</i>)</p>
+
+            <div class="text-center">
+                <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/8.png?raw=true"
+                     alt="Filters">
+                <p><strong>Рисунок 8 - </strong><i>Фильтры по свойствам поселений</i></p>
+            </div>
+
+            <p>При выборе фильтров изменяется выборка поселений, представленная на карте, а так же меняются сами
+                фильтры, что видно на <i>рисунке 9</i></p>
+
+            <div class="text-center">
+                <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/9.png?raw=true"
+                     alt="Filters">
+                <p><strong>Рисунок 9 - </strong><i>Изменение фильтров</i></p>
+            </div>
+
+            <p>В сенкции <strong class="red">I</strong> показаны нетронутые фильтры, затем был выбран чекбокс <strong>"Город"</strong>
+                в столбце <strong>"Тип"</strong>, что повлекло за собой изменение доступных фильтров (секция <strong
+                        class="red">II</strong>). Затем была произведена дополнительная фильтрация выбором поселений, в
+                которых есть церковь и это повлекло за собой дальнейшие изменения доступных фильтров, пооказанные в
+                секции <strong class="red">III</strong>
+            </p>
         </div>
     </div>
     <div class="page-header" id="about">
