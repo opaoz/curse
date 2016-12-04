@@ -110,7 +110,9 @@
                     <li><a href="#exactHow">Конкретный год</a></li>
                     <li><a href="#searchHow">Строка поиска</a></li>
                     <li><a href="#mapHow">Карта и просмотр информации о поселении</a></li>
-                    <li><a href="#filtHow"></a></li>
+                    <li><a href="#filtHow">Фильтры</a></li>
+                    <li><a href="#exportHow">Экспорт в Excel</a></li>
+                    <li><a href="#demoHow">Демонстрация</a></li>
                 </ul>
                 <a href="#about"><i class="glyphicon glyphicon-info-sign"></i> О сайте</a>
             </div>
@@ -312,6 +314,56 @@
                 которых есть церковь и это повлекло за собой дальнейшие изменения доступных фильтров, пооказанные в
                 секции <strong class="red">III</strong>
             </p>
+
+            <hr>
+            <br>
+
+            <strong id="exportHow">Экспорт выборки</strong>
+            <p>После проведения фильтрации данных и получения желанной выборки можно экспортировать полученные данные в
+                формать Microsoft Excel. Это делается кнопкой "Экспортирт видимых" (<strong class="cyan">I</strong>),
+                показанной на схеме на <i>рисунке 10</i></p>
+
+            <div class="text-center">
+                <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/10.png?raw=true"
+                     alt="Filters">
+                <p><strong>Рисунок 10 - </strong><i>Экспорт в Excel</i></p>
+            </div>
+
+            <p><strong>ВАЖНО!</strong> Будут экспортированны только поселения (и их состояния), показанные на карте (<i>рисунок
+                11</i>).</p>
+
+            <div class="text-center">
+                <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/11.png?raw=true"
+                     alt="Filters">
+                <p><strong>Рисунок 11 - </strong><i>Представление данных в Excel</i></p>
+            </div>
+
+            <hr>
+            <br>
+
+            <strong id="demoHow">Демонстрация</strong>
+            <p>Для понимания изменения поселений на некотором временном промежутке присутствует кнопка "Начать
+                демонстрацию" (<strong class="purple">I</strong>), представленная на <i>рисунке 12</i>.
+                Демонстрация не имеет отношения к фильтрованным данным, а только показывает ВСЕ поселения и
+                их изменения за ВЕСЬ период, представленный на карте.</p>
+
+            <div class="text-center">
+                <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/12.png?raw=true"
+                     alt="Filters">
+                <p><strong>Рисунок 12 - </strong><i>Кнопка демонстрации</i></p>
+            </div>
+
+            <p>Демонстрация открывается в отдельном окне (<i>рисунок 13</i>),которое может быть закрыто с помощью кнопки
+                <strong
+                        class="blue">III</strong>.</p>
+            <p>В левом верхнем углу показан год (<strong class="yellow">II</strong>), который сейчас показан на карте, в
+                зависимости от года показываются
+                маркеры поселений, существовавших в этот год (например <strong class="orange">I</strong></p>
+            <p>На показ каждого года отводится примерно 0.3 секунды, что является оптимальным, чтобы увидеть, когда
+                появились и исчезли те, или иные поселения.</p>
+            <p>Если изменилось положение поселения в какой-либо год, маркер переставляется, если изменилось название
+                поселения - переименовывается.</p>
+            <p>Демонстрация создана для визуального представления всех даннных, хранящихся в онтологии.</p>
         </div>
     </div>
     <div class="page-header" id="about">
