@@ -61,7 +61,7 @@ $secondColor: indianred;
 }
 
 body {
-  background: #fafafa url('http://flymer.ru/img/bg/papr.jpg');
+  background: white url('http://flymer.ru/img/bg/papr.jpg');
 }
 
 p {
@@ -101,7 +101,10 @@ p {
     display: block;
     color: white;
     font-size: 18px;
-    text-align: center;
+  }
+
+  ul li a {
+    font-size: 14px !important;
   }
 }
 
