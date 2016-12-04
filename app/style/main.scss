@@ -1,6 +1,37 @@
 $mainColor: cornflowerblue;
 $secondColor: indianred;
 
+.howto {
+  .blue {
+    color: #0026FF;
+    font-family: "Times New Roman", sans-serif;
+  }
+
+  .red {
+    color: #FF0000;
+    font-family: "Times New Roman", sans-serif;
+  }
+
+  .purple {
+    color: #FF00DC;
+    font-family: "Times New Roman", sans-serif;
+  }
+
+  .marked {
+    background-color: $mainColor;
+    padding: 3px;
+  }
+
+  .unmarked {
+    background-color: $secondColor;
+    padding: 3px;
+  }
+
+  .green {
+    color: #00FF21;
+  }
+}
+
 body {
   background: #fafafa url('http://flymer.ru/img/bg/papr.jpg');
 }
