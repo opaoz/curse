@@ -1,0 +1,4 @@
+app/bower_components/
+.idea/
+out/
+app/node_modules/

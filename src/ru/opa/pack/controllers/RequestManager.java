@@ -2,7 +2,6 @@ package ru.opa.pack.controllers;
 
 import org.apache.jena.rdf.model.Model;
 import ru.opa.pack.models.Cities;
-import ru.opa.pack.models.FamilyTree;
 import ru.opa.pack.util.JSONHelper;
 import ru.opa.pack.util.QueryExec;
 
