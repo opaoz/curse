@@ -42,26 +42,32 @@ p {
   size: 14px; }
 
 .menu-button {
-  width: 40px;
+  width: 150px;
   height: 40px;
   position: fixed;
   right: 0;
   top: 10px;
   z-index: 9998;
   font-size: 30px;
-  text-align: center;
+  text-align: left;
+  padding-left: 5px;
   background: indianred;
   color: #fafafa;
-  opacity: 0.5;
   padding-top: 3px;
   cursor: pointer;
-  transition: right 0.5s; }
+  transition: all 0.5s; }
   .menu-button:hover {
-    color: white;
-    opacity: 1; }
+    color: white; }
+  .menu-button span {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    transition: right 0.5s; }
   .menu-button.m {
     right: 300px;
-    opacity: 1; }
+    width: 40px; }
+    .menu-button.m span {
+      right: -100px; }
 
 .ps-menu a {
   display: block;

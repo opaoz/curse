@@ -1,0 +1,388 @@
+<div ng-init="vm._init_()"></div>
+<a ng-if="!vm.demonstration" class="menu-button" ng-click="vm.menu=true" ng-class="{'m':vm.menu}"><i
+        class="glyphicon glyphicon-menu-hamburger"></i> <span>Меню</span></a>
+<div class="page-header" id="map">
+    <h1>Историческая интерактивная карта поселений Саратовской области</h1>
+</div>
+<div class="row">
+    <div class="col-xs-4">
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-search"></i></span>
+            <input type="text" class="form-control" ng-model="vm.searchString" placeholder="Введите название">
+        </div>
+    </div>
+    <div class="col-xs-4 col-sm-6" style="line-height: 43px;">
+        <div class="row" style="position:relative;">
+            <span style="position: absolute;top:-15px;left:50%;,margin-left:-20px;">Год:</span>
+            <div class="col-xs-1 year-label">{{vm.minYear}}</div>
+            <div class="col-xs-10">
+                <slider ng-model="vm.year" step="1" range="true" slider-tooltip-position="bottom" min="vm.minYear"
+                        max="vm.MAX_YEAR" value="Year"
+                        tooltip="show"></slider>
+            </div>
+            <div class="col-xs-1 year-label">{{vm.MAX_YEAR}}</div>
+        </div>
+    </div>
+    <div class="col-xs-4 col-sm-2">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="input-group">
+                    <span class="input-group-addon">Год: </span>
+                    <input type="text" class="form-control" ng-model="vm.exactYear" placeholder="Введите год">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <map center="{{vm.map.center | LonLat}}" zoom="{{vm.map.zoom}}" class="map">
+            <custom-marker ng-repeat="mark in vm.markers track by $index"
+                           id="custom-marker-{{$index}}"
+                           on-click="vm.clickOnMarker($index)"
+                           position="{{mark.max.pos}}">
+                <div>
+                    <span class="circle"></span> {{mark.max.name}}
+                </div>
+            </custom-marker>
+        </map>
+    </div>
+</div>
+<pageslide ps-open="vm.pageslide"
+           ps-side="left"
+           ps-size="400px"
+           ps-click-outside="false"
+           ps-key-listener="true">
+    <div class="row more-info">
+        <div class="col-xs-12" id="word-export">
+            <h1>{{vm.selected.max.name}}</h1>
+            <p>{{vm.selected.max.desc}}</p>
+            <p ng-if="vm.selected.max.type"><b>Тип:</b> {{vm.selected.max.type.join(', ')}}</p>
+            <p ng-if="vm.selected.max.nearest"><b>Близлежащие объекты:</b> {{vm.selected.max.nearest.join(', ')}}
+            </p>
+            <p><b>Годы существования:</b> {{vm.selected.max.minYear + ' - ' + vm.selected.max.maxYear}}</p>
+            <p><b>Координаты:</b> {{vm.selected.max.pos.join(', ')}}</p>
+            <p ng-if="vm.selected.array.length>1"><b>Сопутствующие названия:</b>
+                <a ng-repeat="ps in vm.selected.array track by $index"
+                   style="cursor: pointer;"
+                   ng-click="vm.selected.max=ps" ng-if="ps.name!==vm.selected.max.name">{{ps.name}}</a>
+            </p>
+        </div>
+        <div class="text-center" style="background: white;">
+            <a ng-click="vm.word(vm.selected.max.name)" class="btn btn-default"><i
+                    class="glyphicon glyphicon-save"></i>
+                Экспорт в Word</a>
+        </div>
+    </div>
+    <a ng-click="vm.pageslide=false" class="close-btn"><i class="glyphicon glyphicon-remove"></i></a>
+</pageslide>
+<pageslide ps-open="vm.menu"
+           ps-key-listener="true">
+    <div class="row ps-menu">
+        <div class="col-xs-12">
+            <h3 style="color:white;visibility: hidden;">Меню</h3>
+            <hr style="color:white;">
+
+            <a href="#map"><i class="glyphicon glyphicon-map-marker"></i> Карта</a>
+            <a href="#howto"><i class="glyphicon glyphicon-question-sign"></i> Как пользоваться?</a>
+            <ul>
+                <li><a href="#timelineHow">Timeline</a></li>
+                <li><a href="#exactHow">Конкретный год</a></li>
+                <li><a href="#searchHow">Строка поиска</a></li>
+                <li><a href="#mapHow">Карта и просмотр информации о поселении</a></li>
+                <li><a href="#filtHow">Фильтры</a></li>
+                <li><a href="#exportHow">Экспорт в Excel</a></li>
+                <li><a href="#demoHow">Демонстрация</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="ps-footer">
+        &copy; 2016 год<br>
+        СГТУ, Левин В.Е, Шульга Т.Э.
+    </div>
+    <a ng-click="vm.menu=false" class="close-btn"><i class="glyphicon glyphicon-remove"></i></a>
+</pageslide>
+
+<div class="row">
+    <div class="col-xs-12">
+        <a animated-modal options="vm.options"
+           title="Демонстрация последовательного изменения поселений в рамках временных границ"
+           after-close="vm.afterClose()"
+           before-open="vm.beforeOpen()"
+           href="#play" class="btn btn-default btn-custom"><i class="glyphicon glyphicon-play"></i> Начать
+            демонстрацию
+        </a>
+        <a ng-click="vm.downloadCSV()" title="Экспорт всех поселений на карте в Excel"
+           class="btn btn-default btn-custom"><i
+                class="glyphicon glyphicon-save"></i>
+            Экспорт в Excel
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div style="background: #eee;padding:5px 0;" class="clearfix">
+            <div class="col-xs-4">
+                <div class="text-center h4 cp check-block" style="display:block;">
+                    Тип
+                </div>
+                <div ng-repeat="(k,v) in vm.types track by $index" class="animate">
+                    <label>
+                        <checkbox ng-model="vm.types[k]"></checkbox>
+                        {{k}}
+                    </label>
+                </div>
+            </div>
+            <div class="col-xs-4">
+                <div class="text-center h4 cp check-block2" style="display:block;">
+                    Объекты культуры
+                </div>
+                <div ng-repeat="(k,v) in vm.objects track by $index" class="animate">
+                    <label>
+                        <checkbox ng-model="vm.objects[k]"></checkbox>
+                        {{k}}
+                    </label>
+                </div>
+            </div>
+            <div class="col-xs-4">
+                <div class="text-center h4 cp check-block" style="display:block;">
+                    Близлежащие природные объекты
+                </div>
+                <div ng-repeat="(k,v) in vm.nearest track by $index" class="animate">
+                    <label>
+                        <checkbox ng-model="vm.nearest[k]"></checkbox>
+                        {{k}}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-header" id="howto">
+    <h2>Как пользоваться?</h2>
+</div>
+<div class="row howto">
+    <div class="col-xs-12">
+        <strong>Временные границы</strong>
+        <p>Основным критерием выборки при работе с данным инструментом является выбор временных границ.
+            Выбор осуществляется посредством двух инструментов:</p>
+        <ul>
+            <li><strong>Timeline (временная линия)</strong></li>
+            <li><strong>Поле ввода конкретного года</strong></li>
+        </ul>
+        <hr>
+
+        <strong id="timelineHow">Timeline</strong>
+        <p>На <i>рисунке 1</i> представлена детальная схема временной линии.</p>
+        <div class="text-center">
+            <img src="https://github.com/opaoz/curse/blob/master/app/images/1.png?raw=true" alt="Timeline scheme">
+            <p><strong>Рисунок 1 - </strong><i>Детальная схема временной линии</i></p>
+        </div>
+
+        <p>Цифрами <strong class="blue">II</strong> и <strong class="blue">III</strong> на схеме обозначены общие
+            временные границы - от минимального года, представленного в базе, до текущего календарного года.
+            Например, в выборке, представленной на схеме самым первым поселением является город Саратов (основан в
+            1590 году), поэтому строка <strong class="blue">II</strong> имеет значение <strong>1590</strong>.
+        </p>
+
+        <p>Цифрой <strong class="red">I</strong> обозначена сама временная линия. Она представляет собой
+            двусторонний слайдер, позволяющий задавать временные границы, пользуясь "ползунками" <strong
+                    class="purple">IV</strong> и <strong class="purple">V</strong></p>
+        <p>При перемещении "ползунков" <i>(например, рисунок 2)</i> выделенный интервал, применяемый к карте,
+            выделен <strong class="marked">синим цветом</strong>, а промежутки, оставшиеся за пределами интервала и
+            не влияющие на выборку данных, <strong class="unmarked">красным</strong>.</p>
+
+        <div class="text-center">
+            <img src="https://github.com/opaoz/curse/blob/master/app/images/2.png?raw=true" alt="Timeline">
+            <p><strong>Рисунок 2 - </strong><i>Изменённое состояние временной линии</i></p>
+        </div>
+        <hr>
+
+        <strong id="exactHow">Поле ввода конкретного года</strong>
+        <p>Если при осуществлении выборки не нужен интервал, а нужен конкретный год, либо общий интервал слишком
+            велик и не удобен для осуществления выборки с использованием ползунков, можно использовать поле, для
+            ввода значения требуемого года. Поле ввода обозначено на <i>рисунке 3</i> цифрой <strong
+                    class="green">I</strong></p>
+
+        <div class="text-center">
+            <img src="https://github.com/opaoz/curse/blob/master/app/images/3.png?raw=true" alt="Input year">
+            <p><strong>Рисунок 3 - </strong><i>Поле для ввода конкретного года</i></p>
+        </div>
+
+        <p>Сразу же после ввода корректного* значения года, интервал сузится до этого значения и выборка,
+            представленная на карте, также изменится в соответствии с новой временной границей (рисунок 4)</p>
+
+        <div class="text-center">
+            <img src="https://github.com/opaoz/curse/blob/master/app/images/4.png?raw=true"
+                 alt="Input year changed">
+            <p><strong>Рисунок 4 - </strong><i>Изменение временного промежутка после ввода года</i></p>
+        </div>
+
+        <p class="mark">*Корректным считает целочисленное значение, в формате года (4 цифры), подпадающее под общие
+            временные границы (т.е. являющееся больше или равно минимального и меньше или равно максимального)</p>
+        <hr>
+
+        <br>
+        <strong id="searchHow">Строка поиска</strong>
+        <p>Для поиска поселений по названию применяется поле поиска, которое находится в шапке сайта и обозначено
+            цифрой <strong class="orange">I</strong> на <i>рисунке 5</i>.</p>
+
+        <div class="text-center">
+            <img src="https://github.com/opaoz/curse/blob/master/app/images/5.png?raw=true"
+                 alt="Search">
+            <p><strong>Рисунок 5 - </strong><i>Поле поиска</i></p>
+        </div>
+
+        <p>При вводе строки в поле поиска, к выборке применяется фильтр по наличию данной подстроки в названии
+            поселения и все поселения, удовлетворяющие поиску, входят в выборку, показанную на карте.</p>
+        <p><strong>Например</strong>, при вводе в поле поиска строки <strong>"Са"</strong> на карте буду показаны
+            поселения <i>"Саратов", "Самойловка", "Салтыковка" и другие</i></p>
+
+        <hr>
+        <br>
+        <strong id="mapHow">Карта и просмотр информации о поселении</strong>
+        <p>Основным инструментом визуализации выборки является карта с обозначением отфильтрованых поселений. На <i>рисунке
+            6</i> представлена сама карта, а на ней цифрами <strong class="darkpurple">I, II</strong> и <strong
+                class="darkpurple">III</strong> обозначены поселения.</p>
+
+        <div class="text-center">
+            <img src="https://github.com/opaoz/curse/blob/master/app/images/6.png?raw=true"
+                 alt="Map">
+            <p><strong>Рисунок 6 - </strong><i>Карта</i></p>
+        </div>
+
+        <p>Сама карта является встроенным экземпляром Google Maps, с применением API-методов для создания кастомных
+            маркеров, которые и обозначают поселения в выборке.</p>
+        <p>При нажатии на любой из маркеров открывается подробная информация о данном поселении (<strong
+                class="yellow">I</strong> на <i>рисунке 7</i>).
+        </p>
+
+        <div class="text-center">
+            <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/7.png?raw=true"
+                 alt="Description">
+            <p><strong>Рисунок 7 - </strong><i>Подробная информация о поселении</i></p>
+        </div>
+
+        <p>По нажатию на кнопку "Экспорт в Word" (<strong class="cyan">II</strong>) в панеле полной информации о
+            выбранном поселении(<strong class="yellow">I</strong>) Вы можете скачать эту же информацию в формате
+            Microsoft Word.
+        </p>
+
+        <hr>
+        <br>
+
+        <strong id="filtHow">Фильтры</strong>
+        <p>Помимо выборки по году необходимо иметь возможность фильтровать поселения по свойствам. В данной версии
+            проекта представленны три свойства, по которым возможно осуществить фильтрацию - <strong>Тип, Объекты
+                культуры</strong> и <strong>Близлежащие объекты</strong> (<i>рисунок 8</i>)</p>
+
+        <div class="text-center">
+            <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/8.png?raw=true"
+                 alt="Filters">
+            <p><strong>Рисунок 8 - </strong><i>Фильтры по свойствам поселений</i></p>
+        </div>
+
+        <p>При выборе фильтров изменяется выборка поселений, представленная на карте, а также меняются сами
+            фильтры, что видно на <i>рисунке 9</i></p>
+
+        <div class="text-center">
+            <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/9.png?raw=true"
+                 alt="Filters">
+            <p><strong>Рисунок 9 - </strong><i>Изменение фильтров</i></p>
+        </div>
+
+        <p>В секции <strong class="red">I</strong> показаны нетронутые фильтры, затем был выбран чекбокс
+            <strong>"Город"</strong>
+            в столбце <strong>"Тип"</strong>, что повлекло за собой изменение доступных фильтров (секция <strong
+                    class="red">II</strong>). Затем была произведена дополнительная фильтрация выбором поселений, в
+            которых есть церковь и это повлекло за собой дальнейшие изменения доступных фильтров, показанные в
+            секции <strong class="red">III</strong>
+        </p>
+
+        <hr>
+        <br>
+
+        <strong id="exportHow">Экспорт выборки</strong>
+        <p>После проведения фильтрации данных и получения желанной выборки можно экспортировать полученные данные в
+            формате Microsoft Excel. Это делается кнопкой "Экспорт видимых" (<strong class="cyan">I</strong>),
+            показанной на схеме на <i>рисунке 10</i></p>
+
+        <div class="text-center">
+            <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/10.png?raw=true"
+                 alt="Filters">
+            <p><strong>Рисунок 10 - </strong><i>Экспорт в Excel</i></p>
+        </div>
+
+        <p><strong>ВАЖНО!</strong> Будут экспортированны только поселения (и их состояния), показанные на карте (<i>рисунок
+            11</i>).</p>
+
+        <div class="text-center">
+            <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/11.png?raw=true"
+                 alt="Filters">
+            <p><strong>Рисунок 11 - </strong><i>Представление данных в Excel</i></p>
+        </div>
+
+        <hr>
+        <br>
+
+        <strong id="demoHow">Демонстрация</strong>
+        <p>Для понимания изменения поселений на некотором временном промежутке присутствует кнопка "Начать
+            демонстрацию" (<strong class="purple">I</strong>), представленная на <i>рисунке 12</i>.
+            Демонстрация не имеет отношения к фильтрованным данным, а только показывает ВСЕ поселения и
+            их изменения за ВЕСЬ период, представленный на карте.</p>
+
+        <div class="text-center">
+            <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/12.png?raw=true"
+                 alt="Filters">
+            <p><strong>Рисунок 12 - </strong><i>Кнопка демонстрации</i></p>
+        </div>
+
+        <p>Демонстрация открывается в отдельном окне (<i>рисунок 13</i>),которое может быть закрыто с помощью кнопки
+            <strong
+                    class="blue">III</strong>.</p>
+        <p>В левом верхнем углу показан год (<strong class="yellow">II</strong>), который сейчас показан на карте, в
+            зависимости от года показываются
+            маркеры поселений, существовавших в этот год (например <strong class="orange">I</strong>)</p>
+
+        <div class="text-center">
+            <img style="max-width:100%;" src="https://github.com/opaoz/curse/blob/master/app/images/13.png?raw=true"
+                 alt="Filters">
+            <p><strong>Рисунок 13 - </strong><i>Окно демонстрации</i></p>
+        </div>
+
+
+        <p>На показ каждого года отводится примерно 0.3 секунды, что является оптимальным, чтобы увидеть, когда
+            появились и исчезли те, или иные поселения.
+            Если изменилось положение поселения в какой-либо год, маркер
+            переставляется, если изменилось название
+            поселения - переименовывается.</p>
+        <p>Демонстрация создана для визуального представления всех данных, хранящихся в онтологии.</p>
+    </div>
+</div>
+
+<div id="play">
+    <div class="close-play">
+        <i class="glyphicon glyphicon-remove-circle"></i>
+    </div>
+    <div class="modal-content">
+        <map center="{{vm.map.center | LonLat}}" zoom="{{vm.map.zoom}}" class="map">
+            <custom-marker ng-repeat="mark in vm.demo track by $index"
+                           id="custom-marker-preview-{{$index}}"
+                           ng-if="mark.show"
+                           position="{{mark.pos}}">
+                <div>
+                    <span class="circle"></span> {{mark.name}}
+                </div>
+            </custom-marker>
+        </map>
+        <div class="current-year">
+            <h2>
+                <counter value="vm.currentYear"
+                         to="vm.manualStart"
+                         duration="(vm.MAX_YEAR-vm.minYear)*200"
+                         step="vm.step()"> {{vm.currentYear | myNumber}}
+                </counter>
+            </h2>
+        </div>
+    </div>
+</div>

@@ -8,9 +8,6 @@ import ru.opa.pack.views.ServerUI;
 import java.io.*;
 import java.net.Socket;
 
-/**
- * Created by Vladimir_Levin on 11.10.2015.
- */
 public class ClientThread implements Runnable {
     private Socket socket;
     private InputStream inputStream;
