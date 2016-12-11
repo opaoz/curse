@@ -6,8 +6,8 @@
  * @date 12.10.2015
  */
 (function () {
-    angular.module('App').controller('MainController', ['config', '_', 'httpRequest', '$scope', 'requests', 'simpleTmpl', '$timeout', 'csv',
-        function (config, _, httpRequest, $scope, requests, simpleTmpl, $timeout, csv) {
+    angular.module('App').controller('MainController', ['config', '_', 'httpRequest', '$scope', 'requests', 'simpleTmpl', '$timeout', 'csv', '$location', '$anchorScroll',
+        function (config, _, httpRequest, $scope, requests, simpleTmpl, $timeout, csv, $location, $anchorScroll) {
             var vm = this;
             vm.markers = [];
             vm.originalMarkers = [];
@@ -45,6 +45,11 @@
                 send();
                 getMinYear();
                 vm.paths = formatCoords(config.coordArray);
+            };
+
+            vm.scrollTo = function (id) {
+                $location.hash(id);
+                $anchorScroll();
             };
 
             vm.clickOnMarker = function (event, index) {

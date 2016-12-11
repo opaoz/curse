@@ -17,7 +17,7 @@
         'counter',
         'ngRoute'
     ])
-        .config(function ($routeProvider) {
+        .config(function ($routeProvider, $locationProvider) {
             $routeProvider
                 .when('/', {
                     templateUrl: 'js/views/about.html'
