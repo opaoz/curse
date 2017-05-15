@@ -1,0 +1,36 @@
+[
+  {
+    "settlementFounders": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Немцы",
+    "settlementFirstSettlersOf": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Немцы",
+    "culturalObjects": "Памятник погибшим в ВОВ, Лютеранская церковь",
+    "hasEnd": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#1773",
+    "settlementHasBeginning": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#1767",
+    "settlementEntranceTo": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Подлесновское",
+    "settlement": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Баскатовка",
+    "population": "111^^http://www.w3.org/2001/XMLSchema#int",
+    "settlementPopulation": "932^^http://www.w3.org/2001/XMLSchema#int",
+    "settlementHasGeographicalArrangement": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Низкое_Заволжье_у_левого_берега_Волги",
+    "settlementName": "Баскатовка^^http://www.w3.org/2000/01/rdf-schema#Literal",
+    "name": "Кинд^^http://www.w3.org/2000/01/rdf-schema#Literal",
+    "state": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Кинд2",
+    "settlementTypeSetlement": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Село",
+    "hasBeginning": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#1769"
+  },
+  {
+    "settlementFounders": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Немцы",
+    "settlementFirstSettlersOf": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Немцы",
+    "culturalObjects": "Памятник погибшим в ВОВ, Лютеранская церковь",
+    "hasEnd": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#1941",
+    "settlementHasBeginning": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#1767",
+    "settlementEntranceTo": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Подлесновское",
+    "settlement": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Баскатовка",
+    "population": "null",
+    "settlementPopulation": "932^^http://www.w3.org/2001/XMLSchema#int",
+    "settlementHasGeographicalArrangement": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Низкое_Заволжье_у_левого_берега_Волги",
+    "settlementName": "Баскатовка^^http://www.w3.org/2000/01/rdf-schema#Literal",
+    "name": "Кинд^^http://www.w3.org/2000/01/rdf-schema#Literal",
+    "state": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Кинд",
+    "settlementTypeSetlement": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#Село",
+    "hasBeginning": "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#1927"
+  }
+]

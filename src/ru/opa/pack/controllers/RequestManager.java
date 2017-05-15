@@ -2,6 +2,7 @@ package ru.opa.pack.controllers;
 
 import org.apache.jena.rdf.model.Model;
 import ru.opa.pack.models.Cities;
+import ru.opa.pack.models.CitiesNew;
 import ru.opa.pack.util.JSONHelper;
 import ru.opa.pack.util.QueryExec;
 
@@ -12,12 +13,15 @@ import ru.opa.pack.util.QueryExec;
 public class RequestManager {
     private String jsonString;
 
-    //new FamilyTree();
-    private static ru.opa.pack.api.Model md = new Cities();
+    private static ru.opa.pack.api.Model md = new CitiesNew();
     private static Model model = md.getModel();
 
     public RequestManager(String request) {
-        jsonString = JSONHelper.generateJSONResponse(QueryExec.exec(request, model));
+        jsonString = JSONHelper.generateJSONResponse(QueryExec.exec(md.getRequest(request), model));
+    }
+
+    public static void sayHello() {
+        System.out.print("Hello");
     }
 
     @Override

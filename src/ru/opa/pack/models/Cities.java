@@ -19,10 +19,12 @@ import java.util.Map;
  * Created by Vladimir_Levin on 04.02.2016.
  */
 public class Cities extends ru.opa.pack.api.Model {
-    public static final String CITIES_URI = "http://cities/";
-    public static final String RELATIONSHIP_URI = "http://purl.org/vocab/relationship/";
+    private static final String CITIES_URI = "http://cities/";
+    private static final String RELATIONSHIP_URI = "http://purl.org/vocab/relationship/";
     private Map<String, Resource> cities = new HashMap<>();
     private Map<String, Property> properties = new HashMap<>();
+
+    public Map<String, String> requests = new HashMap<>();
 
     public Cities() {
         super(References.MODEL_PATH);
@@ -30,9 +32,16 @@ public class Cities extends ru.opa.pack.api.Model {
             model = reCreateModel();
             exportModel(model);
         }
+
+        requests.put("get", "PREFIX r: <http://purl.org/vocab/relationship/>  SELECT * WHERE {  ?city r:latitude ?lat;   r:longitude ?long;  r:desc ?desc;  r:culture ?objects;  r:group ?group;  r:type ?type;  r:nearest ?nearest;  r:minYear ?minYear;  r:maxYear ?maxYear;  r:entranceTo ?entranceTo; r:name ?name.  }");
+        requests.put("year", "PREFIX r: <http://purl.org/vocab/relationship/> SELECT (MIN(?year) as ?minYear) WHERE{ ?city r:minYear ?year }");
     }
 
-    public Model reCreateModel() {
+    public String getRequest(String request) {
+        return requests.get(request);
+    }
+
+    private Model reCreateModel() {
         model = ModelFactory.createDefaultModel();
         Resource NAMESPACE = model.createResource(RELATIONSHIP_URI);
         model.setNsPrefix("rela", RELATIONSHIP_URI);
@@ -48,7 +57,8 @@ public class Cities extends ru.opa.pack.api.Model {
                 "culture",
                 "minYear",
                 "maxYear",
-                "group"
+                "group",
+                "entranceTo"
         });
 
         cities.put("Saratov", model.createResource(CITIES_URI + "saratov"));
@@ -63,7 +73,8 @@ public class Cities extends ru.opa.pack.api.Model {
                 .addProperty(properties.get("desc"), "Основан как сторожевая крепость для охраны южных рубежей Российского государства в 1590 году, в царствование Фёдора Иоанновича. Во второй половине XVIII века — крупный перевалочный пункт и центр торговли рыбой и солью, а с XIX века — один из центров торговли зерном. Губернский город с 1780 года, в начале XX века — крупнейший по численности жителей город на Волге.")
                 .addProperty(properties.get("type"), "Город")
                 .addProperty(properties.get("culture"), "Церковь,Музей")
-                .addProperty(properties.get("nearest"), "Река");
+                .addProperty(properties.get("nearest"), "Река")
+                .addProperty(properties.get("entranceTo"), "Саратовская область");
 
         cities.put("Ozinki", model.createResource(CITIES_URI + "ozinki"));
         cities.get("Ozinki")
@@ -79,7 +90,23 @@ public class Cities extends ru.opa.pack.api.Model {
                         "Посёлок расположен на берегах реки Большая Чалыкла ")
                 .addProperty(properties.get("type"), "ПГТ")
                 .addProperty(properties.get("culture"), "Церковь,Музей")
-                .addProperty(properties.get("nearest"), "Река,Пруд");
+                .addProperty(properties.get("nearest"), "Река,Пруд")
+                .addProperty(properties.get("entranceTo"), "Саратовская область");
+
+        cities.put("Ershov", model.createResource(CITIES_URI + "ershov"));
+        cities.get("Ershov")
+                .addProperty(properties.get("name"), "Ершов")
+                .addProperty(properties.get("latitude"), "51.12")
+                .addProperty(properties.get("minYear"), "1940")
+                .addProperty(properties.get("maxYear"), "2016")
+                .addProperty(properties.get("group"), "erhov")
+                .addProperty(properties.get("longitude"), "49.42")
+                .addProperty(properties.get("desc"), "Посёлок городского типа, административный центр, крупнейший населённый пункт Озинского района Саратовской области и одноимённая железнодорожная станция Приволжской железной дороги на стыке с КТЖ.\n" +
+                        "\n")
+                .addProperty(properties.get("type"), "Город")
+                .addProperty(properties.get("culture"), "Церковь,Музей")
+                .addProperty(properties.get("nearest"), "Река")
+                .addProperty(properties.get("entranceTo"), "Ершовский район");
 
         cities.put("OzinkiPos", model.createResource(CITIES_URI + "ozinki_pos"));
         cities.get("OzinkiPos")
@@ -96,7 +123,8 @@ public class Cities extends ru.opa.pack.api.Model {
                         "Статус посёлка городского типа — с 1940 года.")
                 .addProperty(properties.get("type"), "Посёлок,Хутор")
                 .addProperty(properties.get("culture"), "Церковь")
-                .addProperty(properties.get("nearest"), "Пруд,Река");
+                .addProperty(properties.get("nearest"), "Пруд,Река")
+                .addProperty(properties.get("entranceTo"), "Саратовская область");
 
         cities.put("Balashov", model.createResource(CITIES_URI + "balashov"));
         cities.get("Balashov")
@@ -110,7 +138,8 @@ public class Cities extends ru.opa.pack.api.Model {
                         "Через город протекает одна из красивейших рек средней полосы России — Хопёр, которая делит Балашов на две неравные части — частный сектор и центральный, с постройками городского типа.")
                 .addProperty(properties.get("type"), "Город,Уездный город")
                 .addProperty(properties.get("culture"), "Музей,Памятник")
-                .addProperty(properties.get("nearest"), "Равнина,Река");
+                .addProperty(properties.get("nearest"), "Равнина,Река")
+                .addProperty(properties.get("entranceTo"), "Балашовский район");
 
         cities.put("BalashovH", model.createResource(CITIES_URI + "balashov_h"));
         cities.get("BalashovH")
@@ -124,7 +153,8 @@ public class Cities extends ru.opa.pack.api.Model {
                         "Через город протекает одна из красивейших рек средней полосы России — Хопёр, которая делит Балашов на две неравные части — частный сектор и центральный, с постройками городского типа.")
                 .addProperty(properties.get("type"), "Хутор")
                 .addProperty(properties.get("culture"), "")
-                .addProperty(properties.get("nearest"), "Равнина,Река");
+                .addProperty(properties.get("nearest"), "Равнина,Река")
+                .addProperty(properties.get("entranceTo"), "Балашовский район");
         return model;
     }
 

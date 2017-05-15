@@ -27,10 +27,15 @@ public class ClientThread implements Runnable {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String line = in.readLine();
-            if (line.startsWith("POST")) {
+            if (line == null) {
+                ui.println("Some shit");
+            } else if (line.startsWith("POST")) {
                 request = HttpResponse.readBodyPOST(in, line);
+                System.out.println(request);
                 if (!request.equals("none")) {
-                    HttpResponse.writeResponse(new RequestManager(request).toString(), outputStream);
+                    String a = new RequestManager(request.replace('\uFFFF', '\t')).toString();
+                    System.out.println(a);
+                    HttpResponse.writeResponse(a, outputStream);
                 }
             } else if (line.startsWith("GET")) {
                 HttpResponse.sendFileGET(outputStream, line, References.FRONT_END_FOLDER);

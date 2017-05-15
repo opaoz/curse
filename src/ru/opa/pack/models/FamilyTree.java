@@ -19,8 +19,8 @@ import java.util.*;
  *         11.10.2015
  */
 public class FamilyTree extends ru.opa.pack.api.Model {
-    public static final String FAMILY_URI = "http://family/";
-    public static final String RELATIONSHIP_URI = "http://purl.org/vocab/relationship/";
+    private static final String FAMILY_URI = "http://family/";
+    private static final String RELATIONSHIP_URI = "http://purl.org/vocab/relationship/";
     private Map<String, Resource> family = new HashMap<>();
 
     public FamilyTree() {
@@ -31,7 +31,11 @@ public class FamilyTree extends ru.opa.pack.api.Model {
         }
     }
 
-    public Model reCreateModel() {
+    public String getRequest(String request) {
+        return request;
+    }
+
+    private Model reCreateModel() {
         model = ModelFactory.createDefaultModel();
         Resource NAMESPACE = model.createResource(RELATIONSHIP_URI);
         model.setNsPrefix("rela", RELATIONSHIP_URI);

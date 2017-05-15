@@ -145,13 +145,24 @@
                     </label>
                 </div>
             </div>
-            <div class="col-xs-4">
+            <!--<div class="col-xs-4">
                 <div class="text-center h4 cp check-block" style="display:block;">
                     Близлежащие природные объекты
                 </div>
                 <div ng-repeat="(k,v) in vm.nearest track by $index" class="animate">
                     <label>
                         <checkbox ng-model="vm.nearest[k]"></checkbox>
+                        {{k}}
+                    </label>
+                </div>
+            </div>-->
+            <div class="col-xs-4">
+                <div class="text-center h4 cp check-block" style="display:block;">
+                    Муниципальное подчинение
+                </div>
+                <div ng-repeat="(k,v) in vm.entranceTo track by $index" class="animate">
+                    <label>
+                        <checkbox ng-model="vm.entranceTo[k]"></checkbox>
                         {{k}}
                     </label>
                 </div>

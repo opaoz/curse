@@ -15,9 +15,11 @@
             vm.types = {/*'Город': false, 'Деревня': false, 'Хутор': false*/};
             vm.objects = {/*'Церковь': false, 'Музей': false, 'Изба-читальня': false*/};
             vm.nearest = {/*'Река': false, 'Гора': false, 'Пруд': false, 'ПГТ': false*/};
+            vm.entranceTo = {};
             vm.MAX_YEAR = new Date().getFullYear();
             vm.searchString = '';
             vm.manualStart = 0;
+            vm.groups = {};
             vm.options = {
                 animatedIn: 'zoomIn',
                 animatedOut: 'zoomOut',
@@ -31,6 +33,7 @@
             $scope.$watch('vm.searchString', _.debounce(filt, 500));
             $scope.$watch('vm.types', _.debounce(filt, 500), true);
             $scope.$watch('vm.nearest', _.debounce(filt, 500), true);
+            $scope.$watch('vm.entranceTo', _.debounce(filt, 500), true);
             $scope.$watch('vm.objects', _.debounce(filt, 500), true);
             $scope.$watch('vm.exactYear', _.debounce(exact, 500));
 
@@ -82,8 +85,31 @@
             };
 
             vm.step = function () {
+                _.each(vm.groups, function (v, k) {
+                    vm.groups[k] = false;
+                });
+
                 _.each(vm.demo, function (value) {
                     value.show = (value.minYear <= vm.currentYear && value.maxYear >= vm.currentYear);
+
+                    if (value.isSettlement) {
+                        value.show = false;
+                    }
+
+                    if (value.show) {
+                        vm.groups[value.group] = true;
+                    }
+                });
+
+                _.each(vm.groups, function (v, k) {
+                    if (!v) {
+                        _.each(vm.demo, function (value) {
+                            if (value.group === k && value.isSettlement) {
+                                value.show = true;
+                                vm.groups[k] = true;
+                            }
+                        });
+                    }
                 });
 
                 $scope.$applyAsync();
@@ -110,16 +136,22 @@
                             searchStr = value.name.toLowerCase().replace('ё', 'е').indexOf(vm.searchString.toLowerCase().replace('ё', 'е')) !== -1
                         }
 
+                        value.maxRange = value.maxYear - vm.year[1];
+                        if (value.maxRange < 0) {
+                            value.maxRange = 10000000;
+                        }
+
                         return (value.minYear <= vm.year[1] && value.maxYear >= vm.year[0]) &&
                             checkProp(vm.types, value.type) &&
                             checkProp(vm.nearest, value.nearest) &&
+                            checkProp(vm.entranceTo, value.entranceTo) &&
                             checkProp(vm.objects, value.objects) && searchStr;
                     }));
 
                     fillFilters(markers);
 
                     markers = _.map(_.groupBy(markers, 'group'), function (value) {
-                        return {array: value, max: _.maxBy(value, 'maxYear')};
+                        return {array: value, max: _.minBy(value, 'maxRange')};
                     });
 
                     if (!_.isEqual(old, markers) || _.isEmpty(old)) {
@@ -155,37 +187,60 @@
 
             function send() {
                 httpRequest.send(requests.getByParams).then(function (response) {
-                    console.log(response.data);
+                    var i = 0;
+                    var geocoder = new google.maps.Geocoder();
 
-                    vm.originalMarkers = _.compact(_.map(response.data, function (value) {
-                        value.lat = value.lat.replace(',', '.');
-                        value.long = value.long.replace(',', '.');
-                        value.pos = [value.lat, value.long];
-                        value.type = _.uniq(value.type.split(','));
-                        value.nearest = _.uniq(value.nearest.split(','));
-                        value.objects = value.objects ? _.uniq(value.objects.split(',')) : [];
-                        value.minYear = +value.minYear;
-                        value.maxYear = +value.maxYear;
+                    var originalMarkers = _.compact(mapping(response.data));
 
-                        return value;
-                    }));
+                    var groups = _.groupBy(originalMarkers, 'group');
+                    var count = _.keys(groups).length;
+                    var result = {};
 
-                    filt();
+                    _.each(groups, function (value) {
+                        var max = _.maxBy(value, 'maxYear');
+
+                        geocoder.geocode({
+                            'address': max.group
+                        }, function (results, status) {
+                            i++;
+                            if (status === google.maps.GeocoderStatus.OK) {
+                                var Lat = results[0].geometry.location.lat();
+                                var Lng = results[0].geometry.location.lng();
+
+                                result[max.group] = {lat: Lat, long: Lng, pos: [Lat, Lng]};
+                            }
+
+                            if (i === count) {
+                                vm.originalMarkers = _.map(originalMarkers, function (v) {
+                                    v.lat = result[v.group].lat || v.lat;
+                                    v.long = result[v.group].long || v.long;
+                                    v.pos = result[v.group].pos || v.pos;
+
+                                    return v;
+                                });
+                                filt();
+                            }
+                        });
+
+                    });
                 });
             }
 
             function fillFilters(array) {
-                var types = [], nearest = [], objects = [];
+                var types = [], nearest = [], objects = [], entranceTo = [];
 
                 _.each(array, function (value) {
                     types = _.concat(types, value.type);
                     nearest = _.concat(nearest, value.nearest);
                     objects = _.concat(objects, value.objects);
+                    entranceTo = _.concat(entranceTo, value.entranceTo);
                 });
 
                 vm.types = compact(vm.types);
                 vm.nearest = compact(vm.nearest);
                 vm.objects = compact(vm.objects);
+                vm.entranceTo = compact(vm.entranceTo);
+
                 _.each(_.uniq(types), function (value) {
                     vm.types[value] = !!vm.types[value];
                 });
@@ -198,9 +253,14 @@
                     vm.objects[value] = !!vm.objects[value];
                 });
 
+                _.each(_.uniq(entranceTo), function (value) {
+                    vm.entranceTo[value] = !!vm.entranceTo[value];
+                });
+
                 vm.types = sort(vm.types);
                 vm.nearest = sort(vm.nearest);
                 vm.objects = sort(vm.objects);
+                vm.entranceTo = sort(vm.entranceTo);
 
                 return array;
             }
@@ -233,7 +293,7 @@
 
             function getMinYear() {
                 httpRequest.send(requests.getMinYear).then(function (response) {
-                    vm.minYear = response.data[0].minYear;
+                    vm.minYear = +response.data[0].year.replace(config.prefixes[0], '');
                     vm.currentYear = vm.minYear;
                     vm.manualStart = vm.minYear;
                     vm.year = [vm.minYear, vm.MAX_YEAR];
@@ -244,6 +304,84 @@
                 return _.map(angular.fromJson(coords), function (value) {
                     return [value.latitude, value.longitude];
                 });
+            }
+
+            function mapping(array) {
+                var prefixes = config.prefixes;
+                var settlements = {};
+
+                array = _.map(array, function (obj) {
+                    var value = [];
+
+                    _.each(obj, function (v, k) {
+                        _.each(prefixes, function (prefix) {
+                            v = v.replace(prefix, '');
+                        });
+
+                        value[k] = v;
+                    });
+
+                    return value;
+                });
+
+                _.each(array, function (value) {
+                    if (!value.settlementHasBeginning) {
+                        return;
+                    }
+
+                    var result = {};
+
+                    result.lat = '51.32';
+                    result.long = '46';
+                    result.pos = [value.lat, value.long];
+
+                    result.type = [value.settlementTypeSetlement];
+                    result.nearest = [];
+                    result.entranceTo = [value.settlementEntranceTo.replace('_', ' ')];
+                    result.objects = value.culturalObjects ? _.uniq(value.culturalObjects.split(',')) : [];
+                    result.minYear = +value.settlementHasBeginning;
+                    result.maxYear = vm.MAX_YEAR;
+                    result.name = value.settlementName;
+                    result.group = value.settlement;
+                    result.population = value.settlementPopulation;
+                    result.geo = value.settlementHasGeographicalArrangement.replace('_', ' ');
+                    result.desc = 'Not yet';
+                    result.founders = value.settlementFounders;
+                    result.isSettlement = true;
+
+                    settlements[result.group] = result;
+                    vm.groups[result.group] = false;
+                });
+
+                array = _.map(array, function (value) {
+                    var result = {};
+
+                    result.lat = '51.32';
+                    result.long = '46';
+                    result.pos = [value.lat, value.long];
+
+                    result.type = value.typeSetlement ? [value.typeSetlement] : undefined;
+                    result.nearest = [];
+                    result.entranceTo = value.entranceTo ? [value.entranceTo.replace('_', ' ')] : undefined;
+                    result.minYear = +value.hasBeginning;
+                    result.maxYear = +value.hasEnd;
+                    result.name = value.name;
+                    result.group = value.settlement;
+                    result.population = value.population;
+                    result.desc = 'No desc';
+                    result.range = result.maxYear - result.minYear;
+                    result.isSettlement = false;
+
+                    return _.defaults(result, settlements[result.group]);
+                });
+
+                settlements = _.map(settlements, function (v) {
+                    return v;
+                });
+
+                console.log(settlements);
+
+                return _.concat(array, settlements);
             }
         }]);
 })();

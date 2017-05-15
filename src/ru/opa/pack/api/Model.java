@@ -38,7 +38,9 @@ public abstract class Model {
         model.add(model.createStatement(map.get(who), what, map.get(whom)));
     }
 
-    public Boolean exportModel(org.apache.jena.rdf.model.Model model) {
+    public abstract String getRequest(String request);
+
+    protected Boolean exportModel(org.apache.jena.rdf.model.Model model) {
         File file = new File(path);
 
         try {

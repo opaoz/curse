@@ -1,5 +1,6 @@
 package ru.opa.pack.server;
 
+import ru.opa.pack.controllers.RequestManager;
 import ru.opa.pack.references.References;
 import ru.opa.pack.views.ServerUI;
 
@@ -23,6 +24,7 @@ public class Server {
         this.ui = ui;
         serverSocket = new ServerSocket(port);
         ui.println("Server started...");
+        RequestManager.sayHello();
     }
 
     public void start() throws IOException {
