@@ -141,11 +141,15 @@
                             value.maxRange = 10000000;
                         }
 
+                        var objects = _.filter(value.objects, function (v) {
+                            return v.year >= vm.year[0] && v.year <= vm.year[1];
+                        });
+
                         return (value.minYear <= vm.year[1] && value.maxYear >= vm.year[0]) &&
                             checkProp(vm.types, value.type) &&
                             checkProp(vm.nearest, value.nearest) &&
                             checkProp(vm.entranceTo, value.entranceTo) &&
-                            checkProp(vm.objects, value.objects) && searchStr;
+                            checkProp(vm.objects, objects) && searchStr;
                     }));
 
                     fillFilters(markers);
@@ -165,6 +169,10 @@
 
 
                 function checkProp(object, array) {
+                    if (!_.isEmpty(array) && _.first(array).name) {
+                        array = _.map(array, 'name');
+                    }
+
                     var has = true, needs = [];
                     _.each(object, function (value, key) {
                         if (value) {
@@ -174,6 +182,7 @@
 
                     if (needs.length) {
                         has = false;
+
                         _.each(needs, function (val) {
                             if (array.indexOf(val) !== -1) {
                                 has = true;
@@ -200,7 +209,7 @@
                         var max = _.maxBy(value, 'maxYear');
 
                         geocoder.geocode({
-                            'address': max.group
+                            'address': 'Саратовская область, ' + max.group
                         }, function (results, status) {
                             i++;
                             if (status === google.maps.GeocoderStatus.OK) {
@@ -232,7 +241,7 @@
                 _.each(array, function (value) {
                     types = _.concat(types, value.type);
                     nearest = _.concat(nearest, value.nearest);
-                    objects = _.concat(objects, value.objects);
+                    objects = _.concat(objects, _.map(value.objects, 'name'));
                     entranceTo = _.concat(entranceTo, value.entranceTo);
                 });
 
@@ -315,9 +324,13 @@
 
                     _.each(obj, function (v, k) {
                         _.each(prefixes, function (prefix) {
-                            v = v.replace(prefix, '');
+                            if (!_.isEmpty(v)) {
+                                v = v.replace(prefix, '');
+                            }
                         });
-
+                        if (_.isEmpty(v)) {
+                            v = undefined;
+                        }
                         value[k] = v;
                     });
 
@@ -335,21 +348,53 @@
                     result.long = '46';
                     result.pos = [value.lat, value.long];
 
-                    result.type = [value.settlementTypeSetlement];
+                    result.type = [value.settlementTypeSetlement || 'Село'];
                     result.nearest = [];
                     result.entranceTo = [value.settlementEntranceTo.replace('_', ' ')];
-                    result.objects = value.culturalObjects ? _.uniq(value.culturalObjects.split(',')) : [];
                     result.minYear = +value.settlementHasBeginning;
                     result.maxYear = vm.MAX_YEAR;
                     result.name = value.settlementName;
                     result.group = value.settlement;
                     result.population = value.settlementPopulation;
-                    result.geo = value.settlementHasGeographicalArrangement.replace('_', ' ');
+                    result.geo = value.settlementHasGeographicalArrangement ? value.settlementHasGeographicalArrangement.replace('_', ' ') : '';
                     result.desc = 'Not yet';
                     result.founders = value.settlementFounders;
                     result.isSettlement = true;
 
-                    settlements[result.group] = result;
+
+                    if (!_.isEmpty(value.culturalObjects)) {
+                        result.objectsYears = (value.culturalObjectsYears || '').split(',');
+                        result.objectsYears = _.map(result.objectsYears, function (v) {
+                            _.each(config.prefixes, function (prefix) {
+                                v = v.replace(prefix, '');
+                            });
+
+                            return v;
+                        });
+
+                        result.objects = _.uniq(value.culturalObjects.split(','));
+                        result.objects = _.map(result.objects, function (v, k) {
+                            return {name: v, year: parseInt(result.objectsYears[k], 10)};
+                        });
+
+                        console.log(result.name.indexOf('Арка'), result.objects[0].name.indexOf('краев'),
+                            result.name.indexOf('Баска'), result.objects[0].name.indexOf('ВОВ'));
+                    }
+
+                    if (!_.isEmpty(settlements[result.group])) {
+                        if (!((result.name.indexOf('Арка') !== -1 && result.objects[0].name.indexOf('краев') !== -1)
+                            || (result.name.indexOf('Баска') === -1 || result.objects[0].name.indexOf('ВОВ') === -1))) {
+                            result.objects = undefined;
+                        }
+
+                        settlements[result.group] = _.defaults(settlements[result.group], result);
+                    } else {
+                        if (!((result.name.indexOf('Арка') !== -1 && result.objects[0].name.indexOf('краев') !== -1)
+                            || (result.name.indexOf('Баска') === -1 || result.objects[0].name.indexOf('ВОВ') === -1))) {
+                            result.objects = undefined;
+                        }
+                        settlements[result.group] = result;
+                    }
                     vm.groups[result.group] = false;
                 });
 
@@ -371,6 +416,7 @@
                     result.desc = 'No desc';
                     result.range = result.maxYear - result.minYear;
                     result.isSettlement = false;
+                    result.objects = [];
 
                     return _.defaults(result, settlements[result.group]);
                 });
@@ -378,8 +424,6 @@
                 settlements = _.map(settlements, function (v) {
                     return v;
                 });
-
-                console.log(settlements);
 
                 return _.concat(array, settlements);
             }

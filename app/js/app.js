@@ -41,7 +41,8 @@
             prefixes: [
                 "http://www.semanticweb.org/анна/ontologies/2016/4/untitled-ontology-41#",
                 "^^http://www.w3.org/2001/XMLSchema#int",
-                "^^http://www.w3.org/2000/01/rdf-schema#Literal"
+                "^^http://www.w3.org/2000/01/rdf-schema#Literal",
+                "null"
             ]
         });
 })();

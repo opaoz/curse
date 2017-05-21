@@ -12,7 +12,7 @@ public final class References {
     /*Models*/
     public static final String FAMILY_PATH = "D:/Family/family.rdf";
     public static final String MODEL_PATH = "D:/Curse/curse.rdf";
-    public static final String NEW_PATH = "D:/Curse/curve.owl";
+    public static final String NEW_PATH = "D:/Curse/curve2.owl";
 
     /*BackEnd*/
     public static final int DEFAULT_SERVER_PORT = 8080;
