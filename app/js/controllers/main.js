@@ -6,8 +6,8 @@
  * @date 12.10.2015
  */
 (function () {
-    angular.module('App').controller('MainController', ['config', '_', 'httpRequest', '$scope', 'requests', 'simpleTmpl', '$timeout', 'csv', '$location', '$anchorScroll',
-        function (config, _, httpRequest, $scope, requests, simpleTmpl, $timeout, csv, $location, $anchorScroll) {
+    angular.module('App').controller('MainController', ['$uibModal', 'config', '_', 'httpRequest', '$scope', 'requests', 'simpleTmpl', '$timeout', 'csv', '$location', '$anchorScroll',
+        function ($uibModal, config, _, httpRequest, $scope, requests, simpleTmpl, $timeout, csv, $location, $anchorScroll) {
             var vm = this;
             vm.markers = [];
             vm.originalMarkers = [];
@@ -18,6 +18,7 @@
             vm.entranceTo = {};
             vm.MAX_YEAR = new Date().getFullYear();
             vm.searchString = '';
+            vm.selectedSettlements = {};
             vm.manualStart = 0;
             vm.groups = {};
             vm.options = {
@@ -55,8 +56,55 @@
                 $anchorScroll();
             };
 
+            vm.transform = function (object) {
+                object.objects = _
+                    .chain(object.objects)
+                    .filter(function (v) {
+                        return v.year >= vm.year[0] && v.year <= vm.year[1];
+                    })
+                    .map('name')
+                    .value();
+
+                return object;
+            };
+
+            vm.ok = function () {
+                vm.selectedItems = _.chain(vm.markers).filter(function (v) {
+                    return vm.selectedSettlements[v.max.name];
+                }).map('max').value();
+
+                setTimeout(function () {
+                    $('#wordExportGlobal').wordExport('settlements-export');
+                }, 500);
+            };
+
+            vm.downloadWordAll = function () {
+                var modalInstance = $uibModal.open({
+                    ariaLabelledBy: 'modal-title',
+                    ariaDescribedBy: 'modal-body',
+                    templateUrl: 'myModalContent.html',
+                    controllerAs: 'vm',
+                    controller: function ($uibModalInstance) {
+                        this.markers = vm.markers;
+                        this.ok = function () {
+                            vm.ok();
+                            $uibModalInstance.close();
+                        };
+                        this.selectedSettlements = vm.selectedSettlements;
+                    }
+                });
+
+                modalInstance.result.then(function () {
+
+                }, function () {
+                    console.info('Modal dismissed at: ' + new Date());
+                });
+            };
+
             vm.clickOnMarker = function (event, index) {
-                vm.selected = vm.markers[index];
+                vm.selected = angular.copy(vm.markers[index]);
+                vm.selected.max = vm.transform(vm.selected.max);
+                vm.selected.array = _.uniqBy(vm.selected.array, 'name');
                 vm.pageslide = true;
             };
 
@@ -130,7 +178,7 @@
                 var markers = [];
 
                 $timeout(function () {
-                    markers = angular.copy(_.filter(vm.originalMarkers, function (value) {
+                    markers = _.filter(angular.copy(vm.originalMarkers), function (value) {
                         var searchStr = true;
                         if (vm.searchString) {
                             searchStr = value.name.toLowerCase().replace('ё', 'е').indexOf(vm.searchString.toLowerCase().replace('ё', 'е')) !== -1
@@ -141,7 +189,7 @@
                             value.maxRange = 10000000;
                         }
 
-                        var objects = _.filter(value.objects, function (v) {
+                        value.objects = _.filter(value.objects, function (v) {
                             return v.year >= vm.year[0] && v.year <= vm.year[1];
                         });
 
@@ -149,8 +197,8 @@
                             checkProp(vm.types, value.type) &&
                             checkProp(vm.nearest, value.nearest) &&
                             checkProp(vm.entranceTo, value.entranceTo) &&
-                            checkProp(vm.objects, objects) && searchStr;
-                    }));
+                            checkProp(vm.objects, value.objects) && searchStr;
+                    });
 
                     fillFilters(markers);
 
@@ -361,6 +409,10 @@
                     result.founders = value.settlementFounders;
                     result.isSettlement = true;
 
+                    if (value.settlementSource && value.settlementSource.indexOf('вики') !== -1) {
+                        result.sourceUrl = value.settlementSourceUrl;
+                    }
+
 
                     if (!_.isEmpty(value.culturalObjects)) {
                         result.objectsYears = (value.culturalObjectsYears || '').split(',');
@@ -376,23 +428,20 @@
                         result.objects = _.map(result.objects, function (v, k) {
                             return {name: v, year: parseInt(result.objectsYears[k], 10)};
                         });
+                    }
 
-                        console.log(result.name.indexOf('Арка'), result.objects[0].name.indexOf('краев'),
-                            result.name.indexOf('Баска'), result.objects[0].name.indexOf('ВОВ'));
+
+                    var objects = result.objects;
+                    result.objects = undefined;
+
+                    if ((result.name.indexOf('Арка') !== -1 && objects[0].name.indexOf('музей') !== -1)
+                        || (result.name.indexOf('Баска') !== -1 && objects[0].name.indexOf('ВОВ') !== -1)) {
+                        result.objects = objects;
                     }
 
                     if (!_.isEmpty(settlements[result.group])) {
-                        if (!((result.name.indexOf('Арка') !== -1 && result.objects[0].name.indexOf('краев') !== -1)
-                            || (result.name.indexOf('Баска') === -1 || result.objects[0].name.indexOf('ВОВ') === -1))) {
-                            result.objects = undefined;
-                        }
-
                         settlements[result.group] = _.defaults(settlements[result.group], result);
                     } else {
-                        if (!((result.name.indexOf('Арка') !== -1 && result.objects[0].name.indexOf('краев') !== -1)
-                            || (result.name.indexOf('Баска') === -1 || result.objects[0].name.indexOf('ВОВ') === -1))) {
-                            result.objects = undefined;
-                        }
                         settlements[result.group] = result;
                     }
                     vm.groups[result.group] = false;
@@ -416,7 +465,8 @@
                     result.desc = 'No desc';
                     result.range = result.maxYear - result.minYear;
                     result.isSettlement = false;
-                    result.objects = [];
+                    result.sourceUrl = value.sourceUrl;
+                    result.sourceDesc = value.sourceDesc;
 
                     return _.defaults(result, settlements[result.group]);
                 });

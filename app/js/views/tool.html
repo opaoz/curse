@@ -55,17 +55,34 @@
            ps-key-listener="true">
     <div class="row more-info">
         <div class="col-xs-12" id="word-export">
-            <h1>{{vm.selected.max.name}}</h1>
-            <p>{{vm.selected.max.desc}}</p>
+            <h1>{{vm.selected.max.name}}
+                <small>
+                    <a target="_blank" href="{{vm.selected.max.sourceUrl | trust:'url'}}"
+                       title="{{vm.selected.max.sourceDesc}}"><i
+                            class="glyphicon glyphicon-link"></i></a>
+                </small>
+            </h1>
+            <p>{{vm.selected.max.geo}}</p>
             <p ng-if="vm.selected.max.type"><b>Тип:</b> {{vm.selected.max.type.join(', ')}}</p>
-            <p ng-if="vm.selected.max.nearest"><b>Близлежащие объекты:</b> {{vm.selected.max.nearest.join(', ')}}
+            <p ng-if="vm.selected.max.objects && vm.selected.max.objects.length"><b>Культурные объекты:</b>
+                {{vm.selected.max.objects.join(', ')}}
             </p>
+            <p ng-if="vm.selected.max.founders"><b>Первопоселенцы: </b>{{vm.selected.max.founders}}</p>
+            <p ng-if="vm.selected.max.population"><b>Численность населения: </b> {{vm.selected.max.population}}</p>
             <p><b>Годы существования:</b> {{vm.selected.max.minYear + ' - ' + vm.selected.max.maxYear}}</p>
-            <p><b>Координаты:</b> {{vm.selected.max.pos.join(', ')}}</p>
+            <p><b>Координаты:</b> {{vm.selected.max.pos[0] | number:3}}, {{vm.selected.max.pos[1] | number:3}}</p>
+            <p><b>Муниципальное подчинение: </b> {{vm.selected.max.entranceTo.join(', ')}}</p>
+            <p>
+                <i>
+                    <b>Источник данных: </b> {{vm.selected.max.sourceDesc || 'Интернет'}}
+                    <a target="_blank" href="{{vm.selected.max.sourceUrl | trust:'url'}}"
+                       title="{{vm.selected.max.sourceDesc}}">(открыть)</a>
+                </i>
+            </p>
             <p ng-if="vm.selected.array.length>1"><b>Сопутствующие названия:</b>
                 <a ng-repeat="ps in vm.selected.array track by $index"
                    style="cursor: pointer;"
-                   ng-click="vm.selected.max=ps" ng-if="ps.name!==vm.selected.max.name">{{ps.name}}</a>
+                   ng-click="vm.selected.max=vm.transform(ps)" ng-if="ps.name!==vm.selected.max.name">{{ps.name}}</a>
             </p>
         </div>
         <div class="text-center" style="background: white;">
@@ -117,6 +134,11 @@
            class="btn btn-default btn-custom"><i
                 class="glyphicon glyphicon-save"></i>
             Экспорт в Excel
+        </a>
+        <a ng-click="vm.downloadWordAll()" title="Экспорт выбранных поселений в Word"
+           class="btn btn-default btn-custom"><i
+                class="glyphicon glyphicon-save"></i>
+            Экспорт в Word
         </a>
     </div>
 </div>
@@ -371,7 +393,51 @@
         <p>Демонстрация создана для визуального представления всех данных, хранящихся в онтологии.</p>
     </div>
 </div>
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Выберите поселения для экспорта в Word</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <div class="checkbox" ng-repeat="item in vm.markers">
+            <label>
+                <input type="checkbox" ng-model="vm.selectedSettlements[item.max.name]"> {{item.max.name}}
+            </label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="vm.ok()">Скачать</button>
+    </div>
+</script>
 
+<div class="row">
+    <div class="col-xs-12" id="wordExportGlobal" style="visibility: hidden;">
+        <div ng-repeat="item in vm.selectedItems track by $index">
+            <h1>{{item.name}}</h1>
+            <p>{{item.geo}}</p>
+            <p ng-if="item.type"><b>Тип:</b> {{item.type.join(', ')}}</p>
+            <p ng-if="item.objects && item.objects.length"><b>Культурные объекты:</b>
+                {{item.objects.join(', ')}}
+            </p>
+            <p ng-if="item.founders"><b>Первопоселенцы: </b>{{item.founders}}</p>
+            <p ng-if="item.population"><b>Численность населения: </b> {{item.population}}</p>
+            <p><b>Годы существования:</b> {{item.minYear + ' - ' + item.maxYear}}</p>
+            <p><b>Координаты:</b> {{item.pos[0] | number:3}}, {{item.pos[1] | number:3}}</p>
+            <p><b>Муниципальное подчинение: </b> {{item.entranceTo.join(', ')}}</p>
+            <p>
+                <i>
+                    <b>Источник данных: </b> {{item.sourceDesc || 'Интернет'}}
+                    <a target="_blank" href="{{item.sourceUrl | trust:'url'}}"
+                       title="{{item.sourceDesc}}">(открыть)</a>
+                </i>
+            </p>
+            <p ng-if="vm.selected.array.length>1"><b>Сопутствующие названия:</b>
+                <a ng-repeat="ps in vm.selected.array track by $index"
+                   style="cursor: pointer;"
+                   ng-click="item=vm.transform(ps)" ng-if="ps.name!==item.name">{{ps.name}}</a>
+            </p>
+        </div>
+    </div>
+</div>
 <div id="play">
     <div class="close-play">
         <i class="glyphicon glyphicon-remove-circle"></i>
