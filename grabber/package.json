@@ -39,6 +39,8 @@
     "request": "^2.81.0",
     "selenium-webdriver": "^3.3.0",
     "socket.io": "^1.7.3",
+    "translit": "0.0.1",
+    "translit-russian": "0.0.2",
     "underscore": "latest",
     "uuid": "^2.0.2",
     "webdriverio": "^4.6.2",
