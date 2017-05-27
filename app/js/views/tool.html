@@ -67,6 +67,14 @@
             <p ng-if="vm.selected.max.objects && vm.selected.max.objects.length"><b>Культурные объекты:</b>
                 {{vm.selected.max.objects.join(', ')}}
             </p>
+            <p ng-if="vm.selected.max.dbpediaDesc">
+                <b>DBPedia info
+                    <small style="background-color:yellow;font-style: italic;font-weight: 100 !important;">
+                        ({{vm.selected.max.dbpediaUpdate |
+                        date}})
+                    </small>
+                    :</b> {{vm.selected.max.dbpediaDesc}}
+            </p>
             <p ng-if="vm.selected.max.founders"><b>Первопоселенцы: </b>{{vm.selected.max.founders}}</p>
             <p ng-if="vm.selected.max.population"><b>Численность населения: </b> {{vm.selected.max.population}}</p>
             <p><b>Годы существования:</b> {{vm.selected.max.minYear + ' - ' + vm.selected.max.maxYear}}</p>

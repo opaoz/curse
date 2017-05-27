@@ -409,6 +409,14 @@
                     result.founders = value.settlementFounders;
                     result.isSettlement = true;
 
+                    if (!_.isEmpty(value.dbpediaDesc)) {
+                        result.dbpediaDesc = value.dbpediaDesc;
+                    }
+
+                    if (!_.isEmpty(value.dbpediaUpdate)) {
+                        result.dbpediaUpdate = new Date(parseInt(value.dbpediaUpdate, 10));
+                    }
+
                     if (value.settlementSource && value.settlementSource.indexOf('вики') !== -1) {
                         result.sourceUrl = value.settlementSourceUrl;
                     }
