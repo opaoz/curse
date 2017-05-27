@@ -17,7 +17,14 @@ public class RequestManager {
     private static Model model = md.getModel();
 
     public RequestManager(String request) {
-        jsonString = JSONHelper.generateJSONResponse(QueryExec.exec(md.getRequest(request), model));
+        String result = md.getRequest(request);
+
+        if (result.contains("Done")) {
+            jsonString = result;
+        } else {
+            jsonString = JSONHelper.generateJSONResponse(QueryExec.exec(result, model));
+        }
+
     }
 
     public static void sayHello() {

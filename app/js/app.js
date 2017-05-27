@@ -31,8 +31,8 @@
         .constant('requests', (function () {
             var request = {};
 
-            request.getByParams = 'get';
-            request.getMinYear = 'year';
+            request.getByParams = JSON.stringify({get: true});
+            request.getMinYear = JSON.stringify({year: true});
 
             return request;
         })())
