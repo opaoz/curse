@@ -1,0 +1,24 @@
+{
+  "node": true,
+  "bitwise": true,
+  "curly": true,
+  "eqeqeq": true,
+  "forin": true,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "undef": true,
+  "unused": false,
+  "esversion": 6,
+  "strict": false,
+  "loopfunc": true,
+  "globals": {
+    "describe": false,
+    "it": false,
+    "before": false,
+    "beforeEach": false,
+    "after": false,
+    "afterEach": false,
+    "xit": false
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "HH-grabber",
+  "version": "1.0.0",
+  "title": "HH grabber documentation",
+  "url": "/api",
+  "template": {
+    "withCompare": true,
+    "withGenerator": false
+  },
+  "order": []
+}

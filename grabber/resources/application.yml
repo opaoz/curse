@@ -1,0 +1,17 @@
+# Application info
+app:
+  name: Bot
+  version: 1.0.0
+  description:  Microsoft bot framework first try
+  secret: 8A78165E927AE738893822E4816F9
+
+# Server configuration
+server:
+  port: 7000
+
+# Slack configuration
+slack:
+  userToken: xoxp-20715719250-67664099074-67657870229-1bc4f60e25
+  botToken: xoxb-152542979991-7Zsj07ciFd3q1nmcl385qkFD
+  botName: hr_bot
+  botChannel: hr-works
