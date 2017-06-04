@@ -256,6 +256,10 @@
                     _.each(groups, function (value) {
                         var max = _.maxBy(value, 'maxYear');
 
+                        if(_.isEmpty(max) || _.isEmpty(max.group)){
+                        return;
+                        }
+
                         geocoder.geocode({
                             'address': 'Саратовская область, ' + max.group
                         }, function (results, status) {
@@ -398,7 +402,7 @@
 
                     result.type = [value.settlementTypeSetlement || 'Село'];
                     result.nearest = [];
-                    result.entranceTo = [value.settlementEntranceTo.replace('_', ' ')];
+                    result.entranceTo = [(value.settlementEntranceTo || '').replace('_', ' ')];
                     result.minYear = +value.settlementHasBeginning;
                     result.maxYear = vm.MAX_YEAR;
                     result.name = value.settlementName;

@@ -33,7 +33,6 @@ public abstract class Model {
         }
     }
 
-
     public void push(String who, Property what, String whom, Map<String, Resource> map) {
         model.add(model.createStatement(map.get(who), what, map.get(whom)));
     }

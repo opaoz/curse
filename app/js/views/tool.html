@@ -426,6 +426,14 @@
             <p ng-if="item.objects && item.objects.length"><b>Культурные объекты:</b>
                 {{item.objects.join(', ')}}
             </p>
+            <p ng-if="item.dbpediaDesc">
+                <b>DBPedia info
+                    <small style="background-color:yellow;font-style: italic;font-weight: 100 !important;">
+                        ({{item.dbpediaUpdate |
+                        date}})
+                    </small>
+                    :</b> {{item.dbpediaDesc}}
+            </p>
             <p ng-if="item.founders"><b>Первопоселенцы: </b>{{item.founders}}</p>
             <p ng-if="item.population"><b>Численность населения: </b> {{item.population}}</p>
             <p><b>Годы существования:</b> {{item.minYear + ' - ' + item.maxYear}}</p>
